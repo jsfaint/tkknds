@@ -9,6 +9,9 @@
 #if !defined(__GAME_H__)
 #include "game.h"
 #endif
+#if !defined(__SOUND_H__)
+#include "sound.h"
+#endif
 
 // Function: main()
 int main(int argc, char ** argv)
@@ -22,6 +25,7 @@ int main(int argc, char ** argv)
     // Game Splash Screens
     vSplashScreen();
     
+    vSoundInitial();
     // Infinite loop to keep the program running
     while (1)
     {
