@@ -1,0 +1,21 @@
+PAGfx Converter, by Mollusk     www.palib.com
+If you have suggestions, problems, or anything, please mail me at mollusk@palib.info
+
+Converting PAGfx.ini
+Transparent Color : Magenta
+
+2 sprites :
+  plane : 256colors, 16x32, Pal : plane_Pal, -> plane_Sprite
+  bullet : 256colors, 8x8, Pal : bullet_Pal, -> bullet_Sprite
+
+1 backgrounds :
+  bg : EasyBg, 256x192, Pal : bg_Pal, 67 tiles -> bg_Tiles and bg_Map
+
+3 palettes :
+  plane_Pal, 11 colors
+  bullet_Pal, 18 colors
+  bg_Pal, 15 colors
+
+Converted in 0 minutes 1 seconds
+
+Finished !
