@@ -30,8 +30,8 @@ ADD_LIBS +=
 # icon for your project, too!
 #---------------------------------------------------------------------------------
 
-TEXT1 	:= TKKN
-TEXT2 	:= It's just a cosplay.
+TEXT1 	:= TKKNDS
+TEXT2 	:= It's just a clone.
 TEXT3 	:= made by jason
 ICON 	:= -b $(CURDIR)/../logo.bmp
 
@@ -42,7 +42,7 @@ ICON 	:= -b $(CURDIR)/../logo.bmp
 # INCLUDES is a list of directories containing extra header files
 #---------------------------------------------------------------------------------
 
-TARGET		:= $(shell basename TKKN)
+TARGET		:= $(shell basename TKKNDS)
 BUILD		:= build
 SOURCES		:= gfx source data
 INCLUDES	:= include build data

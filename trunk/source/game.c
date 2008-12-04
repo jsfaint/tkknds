@@ -62,7 +62,7 @@ Return Value:
 static void vPlaneInit(void)
 {
     // fix position with spirites size
-    g_Plane.x = SCREEN_WIDTH/2;
+    g_Plane.x = DUAL_SCREEN_WIDTH/2;
     g_Plane.y = SCREEN_HEIGHT + SCREEN_HEIGHT/2;
 
     PA_DualLoadSpritePal(0, (void*)plane_Pal);
@@ -84,22 +84,24 @@ static void vMovePlane(void)
     g_Plane.x += Pad.Held.Right - Pad.Held.Left;
     g_Plane.y += Pad.Held.Down - Pad.Held.Up;
 
+/*  we don't need touch the plane
     if (PA_MoveSprite(0)){
         g_Plane.x = PA_MovedSprite.X - PLANE_W/2;
         g_Plane.y = PA_MovedSprite.Y + SCREEN_HEIGHT - PLANE_H/2;
     }
+*/
 
     if (g_Plane.x <= 0)
         g_Plane.x = 0;
-    else if ((g_Plane.x+ PLANE_W) > SCREEN_WIDTH)
-        g_Plane.x = SCREEN_WIDTH - PLANE_W;
+    else if ((g_Plane.x+ PLANE_W) > DUAL_SCREEN_WIDTH)
+        g_Plane.x = DUAL_SCREEN_WIDTH - PLANE_W;
 
     if (g_Plane.y <= 0)
         g_Plane.y = 0;
-    else if ((g_Plane.y+PLANE_H) > SCREEN_HEIGHT*2-1)
-        g_Plane.y = SCREEN_HEIGHT*2-1 - PLANE_H;
+    else if ((g_Plane.y+PLANE_H) > DUAL_SCREEN_HEIGHT-1)
+        g_Plane.y = DUAL_SCREEN_HEIGHT-1 - PLANE_H;
 
-    //for explode animate..
+    //show animate
     if (Pad.Newpress.Left)
         PA_DualSetSpriteAnim(0, 1);
     else if (Pad.Released.Left)
@@ -132,7 +134,7 @@ bool bCheckCollision(u8 ii)
 }
 
 /*++ 
-    int initialBullet(void)
+    int initialBullet(Bullet *pBullet)
 Routine Description:
     initial a bullet
 
@@ -146,20 +148,35 @@ Return Value:
 int initialBullet(Bullet *pBullet)
 {
     u8 tmp; // which side, 0: up, 1: left, 2: down, 3:right
+    s16 angle;
     PA_InitRand();
     tmp = PA_RandMinMax(0,3);
     
     switch(tmp)
     {
-        case 0:
+        case 0: // y = 0
+            pBullet->y = 0;
+            pBullet->x = PA_RandMinMax(0, DUAL_SCREEN_WIDTH);
             break;
-        case 1:
+        case 1: // x = 0
+            pBullet->x = 0;
+            pBullet->y = PA_RandMinMax(0, DUAL_SCREEN_HEIGHT);
             break;
-        case 2:
+        case 2: // y = max
+            pBullet->x = PA_RandMinMax(0, DUAL_SCREEN_WIDTH);
+            pBullet->y = DUAL_SCREEN_HEIGHT;
             break;
-        case 3:
+        case 3: // x = max
+            pBullet->x = DUAL_SCREEN_WIDTH;
+            pBullet->y = PA_RandMinMax(0, DUAL_SCREEN_HEIGHT);
             break;
         default:
-            break;
+            return 0xFFFFFFFF;
     }
+
+    angle = PA_GetAngle(pBullet->x, pBullet->y, g_Plane.x, g_Plane.y);
+    pBullet->vx = PA_Cos(angle)>>8;
+    pBullet->vy = PA_Sin(angle)>>8;
+    
+    return 0;
 }
