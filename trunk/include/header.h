@@ -9,7 +9,7 @@
 
 // Macros in the header file
 #define SCREENHOLE 0//Size of the space between the screens, We set 0 for this game
-#define DUAL_SCREEN_HEIGHT SCREEN_HEIGHT*2+SCREENHOLE
+#define DUAL_SCREEN_HEIGHT (SCREEN_HEIGHT*2+SCREENHOLE)
 #define DUAL_SCREEN_WIDTH SCREEN_WIDTH
 #define BULLET_MAX 30
 

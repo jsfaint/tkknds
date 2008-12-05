@@ -18,7 +18,9 @@ Bullet g_bullet[BULLET_MAX];
 static void vPlaneInit(void);
 static void vMovePlane(void);
 bool bCheckCollision(u8 ii);
-int initialBullet(Bullet *pBullet);
+void vBulletInit(u16 uIndex);
+void vMoveBullet(void);
+void vBulletInitAll(void);
 
 s32 iGameInit(u8 *gameState, u8 uLevel)
 {
@@ -28,6 +30,11 @@ s32 iGameInit(u8 *gameState, u8 uLevel)
 
     vPlaneInit();
 
+    PA_OutputText(1, 3, 0, "planeX = %d", g_Plane.x);
+    PA_OutputText(1, 3, 1, "planeY = %d", g_Plane.y);
+    
+    memset(g_bullet, 0, sizeof(Bullet)*BULLET_MAX);
+    vBulletInitAll();
 
     *gameState = Game_Play;
     return 0;
@@ -37,6 +44,7 @@ void vGamePlay(u8 *gameState)
 {
 
     vMovePlane();
+    vMoveBullet();
     if(Pad.Newpress.A || Pad.Newpress.B || Pad.Newpress.X || Pad.Newpress.Y)
         *gameState = Game_Pause;
 
@@ -99,7 +107,7 @@ static void vMovePlane(void)
     if (g_Plane.y <= 0)
         g_Plane.y = 0;
     else if ((g_Plane.y+PLANE_H) > DUAL_SCREEN_HEIGHT-1)
-        g_Plane.y = DUAL_SCREEN_HEIGHT-1 - PLANE_H;
+        g_Plane.y = DUAL_SCREEN_HEIGHT - PLANE_H;
 
     //show animate
     if (Pad.Newpress.Left)
@@ -112,7 +120,7 @@ static void vMovePlane(void)
     else if (Pad.Released.Right)
         PA_DualSetSpriteAnim(0, 0);
 
-    PA_DualSetSpriteXY(0,g_Plane.x, g_Plane.y);
+    PA_DualSetSpriteXY(0, g_Plane.x, g_Plane.y);
 }
 
 /********************************************
@@ -127,31 +135,31 @@ Return Value:
 bool bCheckCollision(u8 ii)
 {
     // Consider these spirites as circle.
-    if (PA_Distance(g_Plane.x+8, g_Plane.y+8, g_bullet[ii].x+4, g_bullet[ii].y+4) < 8*4)
+    if (PA_Distance(g_Plane.x+8, g_Plane.y+8, g_bullet[ii].x+2, g_bullet[ii].y+2) < 8*2)
         return TRUE;
     else
         return FALSE;
 }
 
-/*++ 
-    int initialBullet(Bullet *pBullet)
+/********************************************
+    void vBulletInit(Bullet *pBullet)
 Routine Description:
     initial a bullet
 
 Arguments:
-    
-
+    u16 uIndex; the index of bullet.
 Return Value:
-    success = 0;
-    error = 0xFFFFFFFF;
---*/
-int initialBullet(Bullet *pBullet)
+    none
+********************************************/
+void vBulletInit(u16 uIndex)
 {
     u8 tmp; // which side, 0: up, 1: left, 2: down, 3:right
     s16 angle;
-    PA_InitRand();
+    Bullet *pBullet = &g_bullet[uIndex];
+
+    //PA_InitRand();
     tmp = PA_RandMinMax(0,3);
-    
+
     switch(tmp)
     {
         case 0: // y = 0
@@ -164,10 +172,10 @@ int initialBullet(Bullet *pBullet)
             break;
         case 2: // y = max
             pBullet->x = PA_RandMinMax(0, DUAL_SCREEN_WIDTH);
-            pBullet->y = DUAL_SCREEN_HEIGHT;
+            pBullet->y = DUAL_SCREEN_HEIGHT - 4;
             break;
         case 3: // x = max
-            pBullet->x = DUAL_SCREEN_WIDTH;
+            pBullet->x = DUAL_SCREEN_WIDTH - 4;
             pBullet->y = PA_RandMinMax(0, DUAL_SCREEN_HEIGHT);
             break;
         default:
@@ -177,6 +185,36 @@ int initialBullet(Bullet *pBullet)
     angle = PA_GetAngle(pBullet->x, pBullet->y, g_Plane.x, g_Plane.y);
     pBullet->vx = PA_Cos(angle)>>8;
     pBullet->vy = PA_Sin(angle)>>8;
-    
+
+    pBullet = NULL;
     return 0;
+}
+
+void vBulletInitAll(void)
+{
+    u16 uIndex;
+    
+    for (uIndex = 0; uIndex <= BULLET_MAX; uIndex++)
+    {
+        vBulletInit(uIndex);
+
+        PA_DualLoadSpritePal(uIndex+1, (void*)bullet_Pal);
+        PA_DualCreateSprite(uIndex+1, (void*)bullet_Pal, OBJ_SIZE_8X8, 1, 0,
+                            g_bullet[uIndex].x, g_bullet[uIndex].y);
+    }
+}
+
+void vMoveBullet(void)
+{
+    u16 uIndex;
+    
+    for (uIndex=0; uIndex<BULLET_MAX; uIndex++)
+    {
+        if(g_bullet[uIndex].x > DUAL_SCREEN_WIDTH || g_bullet[uIndex].x < 0
+            || g_bullet[uIndex].y > DUAL_SCREEN_HEIGHT || g_bullet[uIndex].y < 0)
+            vBulletInit(uIndex);
+        g_bullet[uIndex].x += g_bullet[uIndex].vx;
+        g_bullet[uIndex].y += g_bullet[uIndex].vy;
+        PA_DualSetSpriteXY(uIndex+1, g_bullet[uIndex].x, g_bullet[uIndex].y);
+    }
 }
