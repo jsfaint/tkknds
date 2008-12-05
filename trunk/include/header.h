@@ -8,10 +8,7 @@
 #endif
 
 // Macros in the header file
-#define SCREENHOLE 0//Size of the space between the screens, We set 0 for this game
-#define DUAL_SCREEN_HEIGHT (SCREEN_HEIGHT*2+SCREENHOLE)
-#define DUAL_SCREEN_WIDTH SCREEN_WIDTH
-#define BULLET_MAX 30
+#define BULLET_MAX 50
 
 enum GameStatus{
     Menu_Init = 0,
@@ -22,6 +19,5 @@ enum GameStatus{
     Game_Pause
 };
 
-extern u8 g_Select;
-
+extern u8 g_screen;
 #endif //__HEADER_H__

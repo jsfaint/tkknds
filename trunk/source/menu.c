@@ -30,13 +30,13 @@ void vMenuInit(u8 *gameState)
     PA_SetBgPalCol(0, 2, PA_RGB(31, 0, 0));	
     PA_SetBgPalCol(0, 3, PA_RGB(0, 0, 31));
     PA_SetBgPalCol(0, 4, PA_RGB(0, 31, 0));
-    PA_SetBgPalCol(1, 1, PA_RGB(31, 31, 31));
-    PA_SetBgPalCol(1, 2, PA_RGB(31, 0, 0));	
-    PA_SetBgPalCol(1, 3, PA_RGB(0, 0, 31));
-    PA_SetBgPalCol(1, 4, PA_RGB(0, 31, 0));
+    //PA_SetBgPalCol(1, 1, PA_RGB(31, 31, 31));
+    //PA_SetBgPalCol(1, 2, PA_RGB(31, 0, 0));	
+    //PA_SetBgPalCol(1, 3, PA_RGB(0, 0, 31));
+    //PA_SetBgPalCol(1, 4, PA_RGB(0, 31, 0));
     
     PA_Init8bitBg(0, 3);
-    PA_Init8bitBg(1, 3);
+    //PA_Init8bitBg(1, 3);
     
     *gameState = Menu_Show;
 }

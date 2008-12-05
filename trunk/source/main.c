@@ -12,6 +12,7 @@
 #if !defined(__SOUND_H__)
 #include "sound.h"
 #endif
+u8 g_screen = 0;
 
 // Function: main()
 int main(int argc, char ** argv)
@@ -20,10 +21,11 @@ int main(int argc, char ** argv)
     
     PA_Init();    // Initializes PA_Lib
     PA_InitVBL(); // Initializes a standard VBL
-    PA_SetScreenSpace(SCREENHOLE);
+    
+    PA_InitText(1,0); // On the top screen
     
     // Game Splash Screens
-    vSplashScreen();
+    //vSplashScreen();
     
     vSoundInitial();
     // Infinite loop to keep the program running
