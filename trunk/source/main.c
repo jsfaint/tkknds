@@ -12,7 +12,10 @@
 #if !defined(__SOUND_H__)
 #include "sound.h"
 #endif
-u8 g_screen = 0;
+
+
+u8  g_screen = 0;
+s32 g_score = 0;
 
 // Function: main()
 int main(int argc, char ** argv)
@@ -23,7 +26,7 @@ int main(int argc, char ** argv)
     PA_InitVBL(); // Initializes a standard VBL
     
     PA_InitText(1,0); // On the top screen
-    
+
     // Game Splash Screens
     //vSplashScreen();
     
@@ -56,6 +59,8 @@ int main(int argc, char ** argv)
         default:
             break;
         }
+        
+        PA_OutputText(1, 0, 1, "%08ds %04dms", Tick(DEFAULT_TIMER_ID)/1000, Tick(DEFAULT_TIMER_ID)%1000);
         
         PA_WaitForVBL();
     }

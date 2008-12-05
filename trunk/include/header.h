@@ -7,6 +7,7 @@
 #include "../source/gfx/all_gfx.h" // Gfx include for the header (.h)
 #endif
 
+#define DEFAULT_TIMER_ID 1
 
 enum GameStatus{
     Menu_Init = 0,
@@ -18,4 +19,5 @@ enum GameStatus{
 };
 
 extern u8 g_screen;
+extern s32 g_score;
 #endif //__HEADER_H__

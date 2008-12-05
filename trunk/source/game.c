@@ -34,6 +34,12 @@ s32 iGameInit(u8 *gameState, u8 uLevel)
     vBulletInitAll();
 
     *gameState = Game_Play;
+    StartTime(true);
+    ResetTimer(DEFAULT_TIMER_ID);
+    StartTimer(DEFAULT_TIMER_ID);
+
+
+
     return 0;
 }
 
@@ -52,11 +58,15 @@ void vGamePlay(u8 *gameState)
 
     vMovePlane();
     vMoveBullet();
+
+    /*
     if(bCheckCollision())
     {
         PA_SetSpriteAnim(g_screen, 0, 3);
+        g_score = Tick(DEFAULT_TIMER_ID);
         *gameState = Game_Pause;
     }
+    */
 
     if(Pad.Newpress.A || Pad.Newpress.B || Pad.Newpress.X || Pad.Newpress.Y)
         *gameState = Game_Pause;
@@ -66,9 +76,15 @@ void vGamePlay(u8 *gameState)
 void vGamePause(u8 *gameState)
 {
     if(Pad.Newpress.A || Pad.Newpress.B || Pad.Newpress.X || Pad.Newpress.Y)
+    {
         *gameState = Game_Play;
+        StartTime(true);
+    }
     else
+    {
         *gameState = Game_Pause;
+        StartTime(false);
+    }
 }
 
 /*********************************************************
