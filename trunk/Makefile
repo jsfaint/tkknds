@@ -20,7 +20,7 @@ ARM7_SELECTED = ARM7_BASIC
 #USE_EFS = YES
 
 PATH := $(DEVKITARM)/bin:$(PATH)
-PROGNAME = PAlib
+PROGNAME = TKKNDS
 OFILES +=
 ADD_LIBS +=
 
@@ -31,7 +31,7 @@ ADD_LIBS +=
 #---------------------------------------------------------------------------------
 
 TEXT1 	:= TKKNDS
-TEXT2 	:= It's just a clone.
+TEXT2 	:= A clone of TKKN 99
 TEXT3 	:= made by jason
 ICON 	:= -b $(CURDIR)/../logo.bmp
 
