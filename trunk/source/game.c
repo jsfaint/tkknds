@@ -17,7 +17,7 @@ Bullet g_bullet[BULLET_MAX];
 /************** Function *****************/
 static void vPlaneInit(void);
 static void vMovePlane(void);
-bool bCheckCollision(u8 ii);
+bool bCheckCollision();
 void vBulletInit(u16 uIndex);
 void vMoveBullet(void);
 void vBulletInitAll(void);
@@ -40,7 +40,7 @@ s32 iGameInit(u8 *gameState, u8 uLevel)
 void vGamePlay(u8 *gameState)
 {
     u8 ii;
-    
+/*
     PA_OutputText(1, 0, 0, "plane: %03d, %03d", g_Plane.x, g_Plane.y);
     for (ii=0; ii<BULLET_MAX; ii+=2)
     {
@@ -48,9 +48,16 @@ void vGamePlay(u8 *gameState)
                     g_bullet[ii].x, g_bullet[ii].y,
                     g_bullet[ii+1].x, g_bullet[ii+1].y);
     }
+*/
 
     vMovePlane();
     vMoveBullet();
+    if(bCheckCollision())
+    {
+        PA_SetSpriteAnim(g_screen, 0, 3);
+        *gameState = Game_Pause;
+    }
+
     if(Pad.Newpress.A || Pad.Newpress.B || Pad.Newpress.X || Pad.Newpress.Y)
         *gameState = Game_Pause;
 
@@ -87,7 +94,7 @@ static void vPlaneInit(void)
 /*********************************************************
     vMovePlane(void)
 Routine Description:
-    handle plane moving
+    handle plane moving, control the plane by Pad or Stylus
 Arguments:
     void
 Return Value:
@@ -95,23 +102,10 @@ Return Value:
 ***********************************************************/
 static void vMovePlane(void)
 {
+    s16 angle;
+
     g_Plane.x += Pad.Held.Right - Pad.Held.Left;
     g_Plane.y += Pad.Held.Down - Pad.Held.Up;
-
-    if (PA_MoveSprite(0)){
-        g_Plane.x = PA_MovedSprite.X - PLANE_W/2;
-        g_Plane.y = PA_MovedSprite.Y - PLANE_H/2;
-    }
-
-    if (g_Plane.x <= 0)
-        g_Plane.x = 0;
-    else if ((g_Plane.x+ PLANE_W) > SCREEN_WIDTH)
-        g_Plane.x = SCREEN_WIDTH - PLANE_W;
-
-    if (g_Plane.y <= 0)
-        g_Plane.y = 0;
-    else if ((g_Plane.y+PLANE_H) > SCREEN_HEIGHT-1)
-        g_Plane.y = SCREEN_HEIGHT - PLANE_H;
 
     //show animate
     if (Pad.Newpress.Left)
@@ -124,25 +118,54 @@ static void vMovePlane(void)
     else if (Pad.Released.Right)
         PA_SetSpriteAnim(g_screen, 0, 0);
 
+    // follow the Stylus
+    if (Stylus.Held)
+    {
+        angle = PA_GetAngle(g_Plane.x+8, g_Plane.y+8, Stylus.X, Stylus.Y);
+        g_Plane.x += (PA_Cos(angle)>>8);
+        g_Plane.y -= (PA_Sin(angle)>>8);
+
+        if ((PA_Cos(angle)>>8)> 0)// right, display 2
+            PA_SetSpriteAnim(g_screen, 0, 2);
+        else if ((PA_Cos(angle)>>8)< 0) // left, display 1
+            PA_SetSpriteAnim(g_screen, 0, 1);
+    }
+    else if (Stylus.Released)
+        PA_SetSpriteAnim(g_screen, 0, 0); // stop, display 0
+
+    if (g_Plane.x <= 0)
+        g_Plane.x = 0;
+    else if ((g_Plane.x+ PLANE_W) > SCREEN_WIDTH)
+        g_Plane.x = SCREEN_WIDTH - PLANE_W;
+
+    if (g_Plane.y <= 0)
+        g_Plane.y = 0;
+    else if ((g_Plane.y+PLANE_H) > SCREEN_HEIGHT-1)
+        g_Plane.y = SCREEN_HEIGHT - PLANE_H;
+
     PA_SetSpriteXY(g_screen, 0, g_Plane.x, g_Plane.y);
 }
 
 /********************************************
-bool bCheckCollision(u8 ii)
+bool bCheckCollision()
 Routine Description:
     check if the given bullent is collision with plane.
+    Consider these spirites as circle.
 Arguments:
-    u8 ii, the index of bullet.
+    void
 Return Value:
     bool, collision return true, no collision return false.
 ********************************************/
-bool bCheckCollision(u8 ii)
+bool bCheckCollision()
 {
-    // Consider these spirites as circle.
-    if (PA_Distance(g_Plane.x+8, g_Plane.y+8, g_bullet[ii].x+2, g_bullet[ii].y+2) < 8*2)
-        return TRUE;
-    else
-        return FALSE;
+    s16 ii;
+    for (ii=0; ii<BULLET_MAX; ii++)
+    {
+        if (PA_Distance(g_Plane.x+8, g_Plane.y+8, g_bullet[ii].x+4, g_bullet[ii].y+4) < 8*4)
+            return TRUE;
+    }
+
+    return FALSE;
 }
 
 /********************************************
@@ -196,7 +219,7 @@ void vBulletInit(u16 uIndex)
 void vBulletInitAll(void)
 {
     u16 uIndex;
-    
+
     for (uIndex = 0; uIndex <= BULLET_MAX; uIndex++)
     {
         vBulletInit(uIndex);
@@ -210,8 +233,7 @@ void vBulletInitAll(void)
 void vMoveBullet(void)
 {
     u16 uIndex;
-    s16 angle;
-    
+
     for (uIndex=0; uIndex<BULLET_MAX; uIndex++)
     {
         if(g_bullet[uIndex].x >= SCREEN_WIDTH || g_bullet[uIndex].x <= 0
