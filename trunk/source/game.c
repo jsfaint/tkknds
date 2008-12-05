@@ -165,7 +165,7 @@ bool bCheckCollision()
     s16 ii;
     for (ii=0; ii<BULLET_MAX; ii++)
     {
-        if (PA_Distance(g_Plane.x+8, g_Plane.y+8, g_bullet[ii].x+2, g_bullet[ii].y+2) < 8*2)
+        if (PA_Distance(g_Plane.x+8, g_Plane.y+8, g_bullet[ii].x+4, g_bullet[ii].y+4) < 8*2)
             return TRUE;
     }
 
