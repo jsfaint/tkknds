@@ -23,7 +23,7 @@ typedef struct{
 //plane size
 #define PLANE_W 16
 #define PLANE_H 16
-#define BULLET_MAX 30
+#define BULLET_MAX 50
 
 /*********** Function *************/
 s32 iGameInit(u8 *gameState, u8 uLevel);
