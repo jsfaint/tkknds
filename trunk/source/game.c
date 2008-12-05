@@ -39,8 +39,15 @@ s32 iGameInit(u8 *gameState, u8 uLevel)
 
 void vGamePlay(u8 *gameState)
 {
-    PA_OutputText(1, 3, 0, "planeX = %03d", g_Plane.x);
-    PA_OutputText(1, 3, 1, "planeY = %03d", g_Plane.y);
+    u8 ii;
+    
+    PA_OutputText(1, 0, 0, "plane: %03d, %03d", g_Plane.x, g_Plane.y);
+    for (ii=0; ii<BULLET_MAX; ii+=2)
+    {
+        PA_OutputText(1, 0, 1+ii/2, "%03d, %03d     %03d, %03d",
+                    g_bullet[ii].x, g_bullet[ii].y,
+                    g_bullet[ii+1].x, g_bullet[ii+1].y);
+    }
 
     vMovePlane();
     vMoveBullet();
@@ -195,7 +202,7 @@ void vBulletInitAll(void)
         vBulletInit(uIndex);
 
         PA_LoadSpritePal(g_screen, uIndex+1, (void*)bullet_Pal);
-        PA_CreateSprite(g_screen, uIndex+1, (void*)bullet_Pal, OBJ_SIZE_8X8, 1, 0,
+        PA_CreateSprite(g_screen, uIndex+1, (void*)bullet_Sprite, OBJ_SIZE_8X8, 1, 1,
                             g_bullet[uIndex].x, g_bullet[uIndex].y);
     }
 }
@@ -207,8 +214,8 @@ void vMoveBullet(void)
     
     for (uIndex=0; uIndex<BULLET_MAX; uIndex++)
     {
-        if(g_bullet[uIndex].x > SCREEN_WIDTH || g_bullet[uIndex].x < 0
-            || g_bullet[uIndex].y > SCREEN_HEIGHT || g_bullet[uIndex].y < 0)
+        if(g_bullet[uIndex].x >= SCREEN_WIDTH || g_bullet[uIndex].x <= 0
+            || g_bullet[uIndex].y >= SCREEN_HEIGHT || g_bullet[uIndex].y <= 0)
             vBulletInit(uIndex);
         g_bullet[uIndex].x += g_bullet[uIndex].vx;
         g_bullet[uIndex].y += g_bullet[uIndex].vy;

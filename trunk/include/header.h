@@ -7,8 +7,6 @@
 #include "../source/gfx/all_gfx.h" // Gfx include for the header (.h)
 #endif
 
-// Macros in the header file
-#define BULLET_MAX 50
 
 enum GameStatus{
     Menu_Init = 0,
