@@ -39,8 +39,8 @@ s32 iGameInit(u8 *gameState, u8 uLevel)
 
 void vGamePlay(u8 *gameState)
 {
-    PA_OutputText(1, 3, 0, "planeX = %d", g_Plane.x);
-    PA_OutputText(1, 3, 1, "planeY = %d", g_Plane.y);
+    PA_OutputText(1, 3, 0, "planeX = %03d", g_Plane.x);
+    PA_OutputText(1, 3, 1, "planeY = %03d", g_Plane.y);
 
     vMovePlane();
     vMoveBullet();
@@ -91,12 +91,10 @@ static void vMovePlane(void)
     g_Plane.x += Pad.Held.Right - Pad.Held.Left;
     g_Plane.y += Pad.Held.Down - Pad.Held.Up;
 
-/*  we don't need touch the plane
     if (PA_MoveSprite(0)){
         g_Plane.x = PA_MovedSprite.X - PLANE_W/2;
-        g_Plane.y = PA_MovedSprite.Y + SCREEN_HEIGHT - PLANE_H/2;
+        g_Plane.y = PA_MovedSprite.Y - PLANE_H/2;
     }
-*/
 
     if (g_Plane.x <= 0)
         g_Plane.x = 0;
