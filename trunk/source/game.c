@@ -23,7 +23,6 @@ bool bCheckCollision();
 void vBulletInit(u16 uIndex);
 void vMoveBullet(void);
 void vBulletInitAll(void);
-void vDestructSprites(void);
 
 s32 iGameInit(u8 *gameState, u8 uLevel)
 {
@@ -61,7 +60,6 @@ void vGamePlay(u8 *gameState)
     if(bCheckCollision())
     {
         PA_SetSpriteAnim(g_screen, 0, 3);
-        vDestructSprites();
         vSoundPlayExplode();
         *gameState = Game_Statis;
     }
@@ -94,7 +92,8 @@ static void vPlaneInit(void)
     g_Plane.x = SCREEN_WIDTH/2;
     g_Plane.y = SCREEN_HEIGHT/2;
 
-    g_plane_gfx = PA_CreateGfx(g_screen, (void*)plane_Pal, OBJ_SIZE_16X16, 1);
+    PA_LoadSpritePal(0, 0, (void*)plane_Pal);
+    g_plane_gfx = PA_CreateGfx(g_screen, (void*)plane_Sprite, OBJ_SIZE_16X16, 1);
 //  PA_LoadSpritePal(g_screen, 0, (void*)plane_Pal);
     PA_CreateSpriteFromGfx  (g_screen, 0, g_plane_gfx,
             OBJ_SIZE_16X16, 1, 0,
@@ -232,7 +231,8 @@ void vBulletInitAll(void)
 {
     u16 uIndex;
 
-    g_bullet_gfx = PA_CreateGfx(g_screen, (void*)bullet_Pal, OBJ_SIZE_8X8, 1);
+    PA_LoadSpritePal(0, 1, (void*)bullet_Pal);
+    g_bullet_gfx = PA_CreateGfx(g_screen, (void*)bullet_Sprite, OBJ_SIZE_8X8, 1);
 
     for (uIndex=0; uIndex<BULLET_MAX; uIndex++)
     {
@@ -262,10 +262,8 @@ void vDestructSprites(void)
 {
     u16 uIndex;
 
-    PA_DeleteSprite(g_screen, 0); //delete plane
-    
-    // delete bullet sprites
-    for (uIndex = 1; uIndex <= BULLET_MAX; uIndex++)
+    // delete all sprites, include plane and bullet
+    for (uIndex = 0; uIndex <= BULLET_MAX; uIndex++)
     {
         PA_DeleteSprite(g_screen, uIndex);
     }

@@ -57,7 +57,10 @@ int main(int argc, char ** argv)
 
         case Game_Statis:
             if(Pad.Newpress.Anykey || Stylus.Newpress)
-                gameState = Menu_Init;
+            {
+                vDestructSprites();
+                gameState = Game_Init;
+            }
             break;
         default:
             break;

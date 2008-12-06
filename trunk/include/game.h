@@ -29,5 +29,5 @@ typedef struct{
 s32 iGameInit(u8 *gameState, u8 uLevel);
 void vGamePlay(u8 *gameState);
 void vGamePause(u8 *gameState);
-
+void vDestructSprites(void);
 #endif //__GAME_H__
