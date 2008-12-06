@@ -7,6 +7,8 @@
 #include "../source/gfx/all_gfx.h" // Gfx include for the header (.h)
 #endif
 
+#undef STYLUS_CONTRL
+
 enum GameStatus{
     Menu_Init = 0,
     Menu_Show,

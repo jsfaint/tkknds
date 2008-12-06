@@ -20,14 +20,16 @@ s32 g_count = 0;
 // Function: main()
 int main(int argc, char ** argv)
 {
+    char szTime[10];
+
     u8 gameState = Menu_Init;
 
     PA_Init();    // Initializes PA_Lib
     PA_InitVBL(); // Initializes a standard VBL
-
-    PA_InitText(1,0); // On the top screen
-    //PA_OutputText(1, 0, 21, "For more info, please visit:");
-    //PA_OutputText(1, 0, 22, "http://tkkn.googlecode.com");
+    //PA_InitText(1, 0);
+    
+    PA_SetBgPalCol(1, 1, PA_RGB(0, 0, 0));
+    PA_Init8bitBg(1, 0);
 
     // Game Splash Screens
     vSplashScreen();
@@ -49,7 +51,10 @@ int main(int argc, char ** argv)
             break;
         case Game_Play:
             g_count++;
+            sprintf(szTime, "%4d.%02ds",  g_count/PA_RTC.FPS, g_count%PA_RTC.FPS);
             PA_OutputText(1, 0, 1, "%d.%02ds", g_count/PA_RTC.FPS, g_count%PA_RTC.FPS);
+
+            PA_CenterSmartText(1, 0, 100, 255, 120, szTime, 1, 4, 0);
             vGamePlay(&gameState);
             break;
 

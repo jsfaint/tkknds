@@ -44,15 +44,6 @@ s32 iGameInit(u8 *gameState, u8 uLevel)
 void vGamePlay(u8 *gameState)
 {
     u8 ii;
-/*
-    PA_OutputText(1, 0, 0, "plane: %03d, %03d", g_Plane.x, g_Plane.y);
-    for (ii=0; ii<BULLET_MAX; ii+=2)
-    {
-        PA_OutputText(1, 0, 1+ii/2, "%03d, %03d     %03d, %03d",
-                    g_bullet[ii].x, g_bullet[ii].y,
-                    g_bullet[ii+1].x, g_bullet[ii+1].y);
-    }
-*/
 
     vMovePlane();
     vMoveBullet();
@@ -129,6 +120,7 @@ static void vMovePlane(void)
     else if (Pad.Released.Right)
         PA_SetSpriteAnim(g_screen, 0, 0);
 
+#ifdef STYLUS_CONTRL
     // follow the Stylus
     if (Stylus.Held)
     {
@@ -143,7 +135,8 @@ static void vMovePlane(void)
     }
     else if (Stylus.Released)
         PA_SetSpriteAnim(g_screen, 0, 0); // stop, display 0
-
+#endif
+    
     if (g_Plane.x <= 0)
         g_Plane.x = 0;
     else if ((g_Plane.x+ PLANE_W) > SCREEN_WIDTH)
