@@ -26,6 +26,8 @@ int main(int argc, char ** argv)
     PA_InitVBL(); // Initializes a standard VBL
 
     PA_InitText(1,0); // On the top screen
+    PA_OutputText(1, 0, 21, "For more info, please visit:");
+    PA_OutputText(1, 0, 22, "http://tkkn.googlecode.com");
 
     // Game Splash Screens
     vSplashScreen();
