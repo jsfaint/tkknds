@@ -55,7 +55,7 @@ int main(int argc, char ** argv)
             break;
         
         case Game_Statis:
-            if(Pad.Newpress.L || Pad.Newpress.R || Stylus.Newpress)
+            if(Pad.Newpress.Anykey || Stylus.Newpress)
                 gameState = Menu_Init;
             break;
         default:
