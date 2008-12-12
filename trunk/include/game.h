@@ -1,7 +1,8 @@
 #ifndef __GAME_H__
 #define __GAME_H__
-
+#if !defined(_PA_MAIN)
 #include <PA9.h>
+#endif
 #if !defined(__HEADER_H__)
 #include "header.h"
 #endif
@@ -23,11 +24,10 @@ typedef struct{
 //plane size
 #define PLANE_W 16
 #define PLANE_H 16
-#define BULLET_MAX 50
 
 /*********** Function *************/
-s32 iGameInit(u8 *gameState, u8 uLevel);
-void vGamePlay(u8 *gameState);
-void vGamePause(u8 *gameState);
-void vDestructSprites(void);
+s32 iGameInit(u8 *pGameState);
+void vGamePlay(u8 *pGameState);
+void vGamePause(u8 *pGameState);
+void vGameStatic(u8 *pGameState);
 #endif //__GAME_H__

@@ -1,5 +1,5 @@
 /*++
-Copyright ? 2008 Pesonal Usage
+Copyright ? 2008 
 
 Module Name:
     menu.c

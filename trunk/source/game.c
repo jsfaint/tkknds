@@ -1,5 +1,5 @@
 /*++
-Copyright ? 2008 Pesonal Usage
+Copyright ? 2008
 Module Name:
     game.c
 Abstract:
@@ -21,14 +21,17 @@ static void vPlaneInit(void);
 static void vMovePlane(void);
 bool bCheckCollision();
 void vBulletInit(u16 uIndex);
-void vMoveBullet(void);
+//bool bCheckCollision();
+inline bool bCheckCollisionbyIndex(u16 ii);
+void vMoveBullet(u8 *pGameState);
 void vBulletInitAll(void);
+void vDestructSprites(void);
 
-s32 iGameInit(u8 *gameState, u8 uLevel)
+s32 iGameInit(u8 *pGameState)
 {
     g_count = 0;
     // load backgroud
-    PA_EasyBgLoad(0, 0, bg);
+    PA_EasyBgLoad(g_screen, 0, bg);
     //PA_EasyBgLoad(1, 0, bg);
 
     vPlaneInit();
@@ -36,36 +39,51 @@ s32 iGameInit(u8 *gameState, u8 uLevel)
     memset(g_bullet, 0, sizeof(Bullet)*BULLET_MAX);
     vBulletInitAll();
 
-    *gameState = Game_Play;
-
+    *pGameState = Game_Play;
     return 0;
 }
 
-void vGamePlay(u8 *gameState)
+void vGamePlay(u8 *pGameState)
 {
     u8 ii;
 
-    vMovePlane();
-    vMoveBullet();
+    g_count++;
+    PA_OutputText(1, 1, 1, "%d.%02ds", g_count/PA_RTC.FPS, g_count%PA_RTC.FPS);
+    PA_OutputText(1, 1, 2, "FPS: %d", PA_RTC.FPS);    
+    PA_OutputText(1, 1, 3, "Bullet Num: %d", g_bulletNum);
 
-    if(bCheckCollision())
+    //add a bullet every interval, about 5 seconds
+    if (g_count%(PA_RTC.FPS*BULLET_INCREASE_INTEVAL)==0 && g_bulletNum<=BULLET_MAX)
     {
-        PA_SetSpriteAnim(g_screen, 0, 3);
-        vSoundPlayExplode();
-        *gameState = Game_Statis;
+        vBulletInit(g_bulletNum);
+        PA_CreateSpriteFromGfx(g_screen, g_bulletNum+1, g_bullet_gfx,
+                OBJ_SIZE_8X8, 1, 1,
+                g_bullet[g_bulletNum].x, g_bullet[g_bulletNum].y);
+        g_bulletNum++;
     }
 
+    vMovePlane();
+    vMoveBullet(pGameState);
+
+//    if(bCheckCollision())
+//    {
+//        PA_SetSpriteAnim(g_screen, 0, 3);
+//        vSoundPlayExplode();
+//        *pGameState = Game_Statis;
+//        return;
+//    }
+
     if(Pad.Newpress.A || Pad.Newpress.B || Pad.Newpress.X || Pad.Newpress.Y)
-        *gameState = Game_Pause;
+        *pGameState = Game_Pause;
 
 }
 
-void vGamePause(u8 *gameState)
+void vGamePause(u8 *pGameState)
 {
     if(Pad.Newpress.A || Pad.Newpress.B || Pad.Newpress.X || Pad.Newpress.Y)
-        *gameState = Game_Play;
+        *pGameState = Game_Play;
     else
-        *gameState = Game_Pause;
+        *pGameState = Game_Pause;
 }
 
 /*********************************************************
@@ -85,12 +103,9 @@ static void vPlaneInit(void)
 
     PA_LoadSpritePal(0, 0, (void*)plane_Pal);
     g_plane_gfx = PA_CreateGfx(g_screen, (void*)plane_Sprite, OBJ_SIZE_16X16, 1);
-//  PA_LoadSpritePal(g_screen, 0, (void*)plane_Pal);
     PA_CreateSpriteFromGfx  (g_screen, 0, g_plane_gfx,
             OBJ_SIZE_16X16, 1, 0,
             g_Plane.x, g_Plane.y);
-//  PA_CreateSprite(g_screen, 0, (void*)plane_Sprite, OBJ_SIZE_16X16, 1, 0,
-//                        g_Plane.x - PLANE_W/2, g_Plane.y - PLANE_H/2);
 }
 
 /*********************************************************
@@ -136,7 +151,7 @@ static void vMovePlane(void)
     else if (Stylus.Released)
         PA_SetSpriteAnim(g_screen, 0, 0); // stop, display 0
 #endif
-    
+
     if (g_Plane.x <= 0)
         g_Plane.x = 0;
     else if ((g_Plane.x+ PLANE_W) > SCREEN_WIDTH)
@@ -160,17 +175,17 @@ Arguments:
 Return Value:
     bool, collision return true, no collision return false.
 ********************************************/
-bool bCheckCollision()
-{
-    s16 ii;
-    for (ii=0; ii<BULLET_MAX; ii++)
-    {
-        if (PA_Distance(g_Plane.x+8, g_Plane.y+8, g_bullet[ii].x+4, g_bullet[ii].y+4) < 8*2)
-            return TRUE;
-    }
-
-    return FALSE;
-}
+//bool bCheckCollision()
+//{
+//    s16 ii;
+//    for (ii=0; ii<g_bulletNum; ii++)
+//    {
+//        if (PA_Distance(g_Plane.x+8, g_Plane.y+8, g_bullet[ii].x+4, g_bullet[ii].y+4) < 8*2)
+//            return TRUE;
+//    }
+//
+//    return FALSE;
+//}
 
 /********************************************
     void vBulletInit(Bullet *pBullet)
@@ -184,28 +199,31 @@ Return Value:
 ********************************************/
 void vBulletInit(u16 uIndex)
 {
-    u8 tmp; // which side, 0: up, 1: left, 2: down, 3:right
+#define UP      1
+#define LEFT    2
+#define DOWN    3
+#define RIGHT   4
+    u8 tmp;
     s16 angle;
     Bullet *pBullet = &g_bullet[uIndex];
 
-    //PA_InitRand();
-    tmp = PA_RandMinMax(0,3);
+    tmp = PA_RandMinMax(1,4);
 
     switch(tmp)
     {
-        case 0: // y = 0
+        case UP: // y = 0
             pBullet->y = 0;
             pBullet->x = PA_RandMinMax(0, SCREEN_WIDTH);
             break;
-        case 1: // x = 0
+        case LEFT: // x = 0
             pBullet->x = 0;
             pBullet->y = PA_RandMinMax(0, SCREEN_HEIGHT);
             break;
-        case 2: // y = max
+        case DOWN: // y = max
             pBullet->x = PA_RandMinMax(0, SCREEN_WIDTH);
             pBullet->y = SCREEN_HEIGHT - 4;
             break;
-        case 3: // x = max
+        case RIGHT: // x = max
             pBullet->x = SCREEN_WIDTH - 4;
             pBullet->y = PA_RandMinMax(0, SCREEN_HEIGHT);
             break;
@@ -216,8 +234,6 @@ void vBulletInit(u16 uIndex)
     angle = PA_GetAngle(pBullet->x, pBullet->y, g_Plane.x, g_Plane.y);
     pBullet->vx = PA_Cos(angle)>>8;
     pBullet->vy = -PA_Sin(angle)>>8;
-
-    pBullet = NULL;
 }
 
 void vBulletInitAll(void)
@@ -227,7 +243,7 @@ void vBulletInitAll(void)
     PA_LoadSpritePal(0, 1, (void*)bullet_Pal);
     g_bullet_gfx = PA_CreateGfx(g_screen, (void*)bullet_Sprite, OBJ_SIZE_8X8, 1);
 
-    for (uIndex=0; uIndex<BULLET_MAX; uIndex++)
+    for (uIndex=0; uIndex<g_bulletNum; uIndex++)
     {
         vBulletInit(uIndex);
         PA_CreateSpriteFromGfx(g_screen, uIndex+1, g_bullet_gfx,
@@ -236,11 +252,19 @@ void vBulletInitAll(void)
     }
 }
 
-void vMoveBullet(void)
+inline bool bCheckCollisionbyIndex(u16 ii)
+{
+    if (PA_Distance(g_Plane.x+8, g_Plane.y+8, g_bullet[ii].x+4, g_bullet[ii].y+4) < 8*2)
+        return TRUE;
+    else
+        return FALSE;
+}
+
+void vMoveBullet(u8 *pGameState)
 {
     u16 uIndex;
 
-    for (uIndex=0; uIndex<BULLET_MAX; uIndex++)
+    for (uIndex=0; uIndex<g_bulletNum; uIndex++)
     {
         if(g_bullet[uIndex].x >= SCREEN_WIDTH || g_bullet[uIndex].x <= 0
             || g_bullet[uIndex].y >= SCREEN_HEIGHT || g_bullet[uIndex].y <= 0)
@@ -248,6 +272,14 @@ void vMoveBullet(void)
         g_bullet[uIndex].x += g_bullet[uIndex].vx;
         g_bullet[uIndex].y += g_bullet[uIndex].vy;
         PA_SetSpriteXY(g_screen, uIndex+1, g_bullet[uIndex].x, g_bullet[uIndex].y);
+        
+        if (bCheckCollisionbyIndex(uIndex))
+        {
+            PA_SetSpriteAnim(g_screen, 0, 3);
+            vSoundPlayExplode();
+            *pGameState = Game_Statis;
+            return;
+        }
     }
 }
 
@@ -255,9 +287,21 @@ void vDestructSprites(void)
 {
     u16 uIndex;
 
-    // delete all sprites, include plane and bullet
-    for (uIndex = 0; uIndex <= BULLET_MAX; uIndex++)
+    // delete all sprites, plane is 0, and bullet is 1-BULLET_MAX
+    for (uIndex = 0; uIndex <= g_bulletNum; uIndex++)
     {
         PA_DeleteSprite(g_screen, uIndex);
+    }
+}
+
+void vGameStatic(u8 *pGameState)
+{
+    if(Pad.Newpress.Anykey || Stylus.Newpress)
+    {
+        vDestructSprites();
+        g_count = 0;
+        g_bulletNum = BULLET_MIN;
+
+        *pGameState = Game_Init;
     }
 }
