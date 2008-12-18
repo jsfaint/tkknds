@@ -8,6 +8,7 @@
 #include "../source/gfx/all_gfx.h" // Gfx include for the header (.h)
 #endif
 
+#define VERSION "v0.3"
 #define STYLUS_CONTRL 1
 
 #define BULLET_MIN 50

@@ -52,9 +52,10 @@ void vGamePlay(u8 *pGameState)
     u8 ii;
 
     g_count++;
-    PA_OutputText(1, 1, 1, "%d.%02ds", g_count/PA_RTC.FPS, g_count%PA_RTC.FPS);
-    PA_OutputText(1, 1, 2, "FPS: %d", PA_RTC.FPS);
-    PA_OutputText(1, 1, 3, "Bullet Num: %d", g_bulletNum);
+    PA_OutputText(1, 1, 0, "TKKN DS %s", VERSION);
+    PA_OutputText(1, 1, 2, "%d.%02ds", g_count/PA_RTC.FPS, g_count%PA_RTC.FPS);
+    PA_OutputText(1, 1, 3, "FPS: %d", PA_RTC.FPS);
+    PA_OutputText(1, 1, 5, "Bullet Num: %d", g_bulletNum);
 
     //add a bullet every interval, about 5 seconds
     if (g_count%(PA_RTC.FPS*BULLET_INCREASE_INTEVAL)==0 && g_bulletNum<=BULLET_MAX)
