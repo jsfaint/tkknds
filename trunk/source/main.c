@@ -62,7 +62,7 @@ int main(int argc, char ** argv)
                 break;
 
             case Game_Statis:
-                vGameStatic(&gameState);
+                vGameStatis(&gameState);
                 break;
             
             default:

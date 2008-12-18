@@ -9,13 +9,13 @@
 
 /************* Structure ************/
 typedef struct{
-	s16 x;
-    s16 y;
+	u16 x;
+    u16 y;
 } Plane;
 
 typedef struct{
-	s16 x;
-    s16 y;
+	u16 x;
+    u16 y;
 	s16 vx;
     s16 vy;
 } Bullet;
@@ -29,5 +29,5 @@ typedef struct{
 s32 iGameInit(u8 *pGameState);
 void vGamePlay(u8 *pGameState);
 void vGamePause(u8 *pGameState);
-void vGameStatic(u8 *pGameState);
+void vGameStatis(u8 *pGameState);
 #endif //__GAME_H__
