@@ -1,4 +1,4 @@
-#labels History
+#labels History,Featured
 = History =
 Here is the game update history.
 
