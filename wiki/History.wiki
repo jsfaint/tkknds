@@ -3,9 +3,9 @@
 Here is the game update history.
 
 ==v0.3==
-Add Stylus control, now you can play with both pad and stylus.
+Add Stylus control, now you can play with pad and stylus.
 
-Modify the game initial, the bullet number +1 every 5 seconds.
+Modify the game initial, the sum of bullet add 1 every 5 seconds.
 
 ==v0.2==
 some bug fixed.
