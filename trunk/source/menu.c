@@ -14,6 +14,8 @@ Author:
 
 #include "menu.h"
 
+void vbirthday(void);
+
 /***********************************************************
 void MenuInit(void);
 
@@ -45,6 +47,24 @@ void vMenuShow(u8 *gameState)
         *gameState = Game_Init;
 }
 
-vSplashScreen(void)
+void vSplashScreen(void)
 {
+    vbirthday();
+}
+
+void vbirthday(void)
+{
+    int i;
+    if ((PA_UserInfo.BdayMonth == PA_RTC.Month) && (PA_UserInfo.BdayDay == PA_RTC.Day))
+    {
+        PA_OutputText(0, 2, 6, "Hi %s,", PA_UserInfo.Name);
+        PA_OutputText(0, 4, 8, "Happy Birthday!", PA_UserInfo.Name);
+        PA_OutputText(0, 4, 10, "Please enjoy the game :)");
+        PA_OutputText(0, 16, 15, "TKKN DS Team");
+        PA_OutputText(0, 18, 16, "20%02d.%02d.%02d", PA_RTC.Year, PA_RTC.Month, PA_RTC.Day);
+
+        PA_WaitFor(Stylus.Newpress || Pad.Newpress.Anykey);
+    }
+    else
+       return;
 }

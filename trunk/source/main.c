@@ -1,7 +1,6 @@
 // Includes
-#if !defined(_PA_MAIN)
 #include <PA9.h>
-#endif
+//#include <fat.h>
 #if !defined(__HEADER_H__)
 #include "header.h"
 #endif
@@ -14,6 +13,9 @@
 #if !defined(__SOUND_H__)
 #include "sound.h"
 #endif
+//#if !defined(__SAVE_H__)
+//#include "save.h"
+//#endif
 
 u8  g_screen = 0;
 s32 g_count = 0;
@@ -28,14 +30,18 @@ int main(int argc, char ** argv)
     PA_Init();    // Initializes PA_Lib
     PA_InitVBL(); // Initializes a standard VBL
     PA_InitText(1, 0);
+    PA_InitText(0, 0);
+    
 
-    //PA_SetBgPalCol(1, 1, PA_RGB(0, 0, 0));
-    //PA_Init8bitBg(1, 0);
+//    g_bLibfat = fatInitDefault();
+//    if (g_bLibfat)
+//        vLoadData();
+    
+    vSoundInitial();
 
     // Game Splash Screens
     vSplashScreen();
-    vSoundInitial();
-
+    
     // Infinite loop to keep the program running
     while (1)
     {
@@ -44,15 +50,15 @@ int main(int argc, char ** argv)
             case Menu_Init:
                 vMenuInit(&gameState);
                 break;
-            
+
             case Menu_Show:
                 vMenuShow(&gameState);
                 break;
-            
+
             case Game_Init:
                 iGameInit(&gameState);
                 break;
-            
+
             case Game_Play:
                 vGamePlay(&gameState);
                 break;
@@ -64,7 +70,7 @@ int main(int argc, char ** argv)
             case Game_Statis:
                 vGameStatis(&gameState);
                 break;
-            
+
             default:
                 break;
         }
