@@ -17,7 +17,7 @@ ARM7_SELECTED = ARM7_BASIC
 # If you're using EFS_lib, uncomment "USE_EFS = YES" here.
 #---------------------------------------------------------------------------------
 
-USE_EFS = YES
+#USE_EFS = YES
 
 PATH := $(DEVKITARM)/bin:$(PATH)
 PROGNAME = TKKNDS
@@ -31,7 +31,7 @@ ADD_LIBS +=
 #---------------------------------------------------------------------------------
 
 TEXT1 	:= TKKNDS
-TEXT2 	:= A clone of TKKN99
+TEXT2 	:= A clone of TKKN 99
 TEXT3 	:= made by jason
 ICON 	:= -b $(CURDIR)/../logo.bmp
 
