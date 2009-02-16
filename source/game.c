@@ -10,17 +10,11 @@ Author:
 
 #include "game.h"
 #include "gfx/all_gfx.c"
-#ifdef SAVE_DATA
-#if !defined(__SAVE_H__)
-#include "save.h"
-#endif
-#endif
+
 
 #define PLANEX  (g_plane.x>>8)
 #define PLANEY  (g_plane.y>>8)
 
-s32 g_count = 0;
-u32 g_bulletNum = BULLET_MIN;
 Plane g_plane;
 Bullet g_bullet[BULLET_MAX];
 u16 g_bullet_gfx;
@@ -31,12 +25,11 @@ static void vPlaneInit(void);
 static void vMovePlane(void);
 bool bCheckCollision();
 void vBulletInit(u16 uIndex);
+//bool bCheckCollision();
+inline bool bCheckCollisionbyIndex(u16 ii);
 void vMoveBullet(u8 *pGameState);
 void vBulletInitAll(void);
 void vDestructSprites(void);
-void vInputName(char* szBuf, int *iLength);
-void vSaveFileData(void);
-void vShowResult(int position, Score score);
 
 s32 iGameInit(u8 *pGameState)
 {
@@ -56,43 +49,38 @@ s32 iGameInit(u8 *pGameState)
 
 void vGamePlay(u8 *pGameState)
 {
-    while(*pGameState == Game_Play)
+    u8 ii;
+
+    g_count++;
+    PA_OutputText(1, 1, 0, "TKKN DS %s", VERSION);
+    PA_OutputText(1, 1, 2, "%d.%02ds", g_count/PA_RTC.FPS, g_count%PA_RTC.FPS);
+    PA_OutputText(1, 1, 3, "FPS: %d", PA_RTC.FPS);
+    PA_OutputText(1, 1, 5, "Bullet Num: %d", g_bulletNum);
+
+    //add a bullet every interval, about 5 seconds
+    if (g_count%(PA_RTC.FPS*BULLET_INCREASE_INTEVAL)==0 && g_bulletNum<=BULLET_MAX)
     {
-        g_count++;
-        PA_OutputText(1, 1, 0, "TKKN DS %s", VERSION);
-        PA_OutputText(1, 1, 2, "%d.%02ds", g_count/PA_RTC.FPS, g_count%PA_RTC.FPS);
-        PA_OutputText(1, 1, 3, "FPS: %d", PA_RTC.FPS);
-        PA_OutputText(1, 1, 5, "Bullet Num: %d", g_bulletNum);
-
-        //add a bullet every interval, about 5 seconds
-        if (g_count%(PA_RTC.FPS*BULLET_INCREASE_INTEVAL)==0 && g_bulletNum<=BULLET_MAX)
-        {
-            vBulletInit(g_bulletNum);
-            PA_CreateSpriteFromGfx(g_screen, g_bulletNum+1, g_bullet_gfx,
-                    OBJ_SIZE_8X8, 1, 1,
-                    g_bullet[g_bulletNum].x, g_bullet[g_bulletNum].y);
-            g_bulletNum++;
-        }
-
-        vMovePlane();
-
-        vMoveBullet(pGameState);
-
-        if(bCheckCollision())
-        {
-            *pGameState = Game_Statistic;
-            PA_SetSpriteAnim(g_screen, 0, 3);
-            AS_MP3Stop();
-            vSoundPlayExplode();
-            vSaveFileData();
-            return;
-        }
-
-        if(Pad.Newpress.A || Pad.Newpress.B || Pad.Newpress.X || Pad.Newpress.Y)
-            *pGameState = Game_Pause;
-
-        PA_WaitForVBL();
+        vBulletInit(g_bulletNum);
+        PA_CreateSpriteFromGfx(g_screen, g_bulletNum+1, g_bullet_gfx,
+                OBJ_SIZE_8X8, 1, 1,
+                g_bullet[g_bulletNum].x, g_bullet[g_bulletNum].y);
+        g_bulletNum++;
     }
+
+    vMovePlane();
+
+    vMoveBullet(pGameState);
+
+//    if(bCheckCollision())
+//    {
+//        PA_SetSpriteAnim(g_screen, 0, 3);
+//        vSoundPlayExplode();
+//        *pGameState = Game_Statis;
+//        return;
+//    }
+
+    if(Pad.Newpress.A || Pad.Newpress.B || Pad.Newpress.X || Pad.Newpress.Y)
+        *pGameState = Game_Pause;
 }
 
 void vGamePause(u8 *pGameState)
@@ -139,6 +127,7 @@ static void vMovePlane(void)
     s16 angle;
 
 #ifdef STYLUS_CONTRL
+    // follow the Stylus
     if (Stylus.Held)
     {
         angle = PA_GetAngle(PLANEX, PLANEY, Stylus.X, Stylus.Y);
@@ -152,9 +141,8 @@ static void vMovePlane(void)
     }
 
     else if (Stylus.Released)
-        PA_SetSpriteAnim(g_screen, 0, 0); // stop, display 0
+        PA_SetSpriteAnim(g_screen, 0, 0); // stop, display 0        
 #endif
-
     g_plane.x += (Pad.Held.Right - Pad.Held.Left)<<8;
     g_plane.y += (Pad.Held.Down - Pad.Held.Up)<<8;
 
@@ -171,12 +159,12 @@ static void vMovePlane(void)
 
     if (PLANEX <= 0)
         g_plane.x = 0;
-    else if (PLANEX  >= (SCREEN_WIDTH-PLANE_W))
+    else if ((PLANEX+ PLANE_W) > SCREEN_WIDTH)
         g_plane.x = (SCREEN_WIDTH - PLANE_W)<<8;
 
     if (PLANEY <= 0)
         g_plane.y = 0;
-    else if (PLANEY >= (SCREEN_HEIGHT-PLANE_H))
+    else if ((PLANEY+PLANE_H) > SCREEN_HEIGHT-1)
         g_plane.y = (SCREEN_HEIGHT - PLANE_H)<<8;
 
     PA_SetSpriteXY(g_screen, 0, PLANEX, PLANEY);
@@ -192,17 +180,17 @@ Arguments:
 Return Value:
     bool, collision return true, no collision return false.
 ********************************************/
-bool bCheckCollision()
-{
-    s16 ii;
-    for (ii=0; ii<g_bulletNum; ii++)
-    {
-        if (PA_Distance(PLANEX+8, PLANEY+8, g_bullet[ii].x+4, g_bullet[ii].y+4) < 8*3)
-            return TRUE;
-    }
-
-    return FALSE;
-}
+//bool bCheckCollision()
+//{
+//    s16 ii;
+//    for (ii=0; ii<g_bulletNum; ii++)
+//    {
+//        if (PA_Distance(g_plane.x+8, g_plane.y+8, g_bullet[ii].x+4, g_bullet[ii].y+4) < 8*2)
+//            return TRUE;
+//    }
+//
+//    return FALSE;
+//}
 
 /********************************************
     void vBulletInit(Bullet *pBullet)
@@ -257,9 +245,6 @@ void vBulletInitAll(void)
 {
     u16 uIndex;
 
-//    if ((PA_UserInfo.BdayMonth == PA_RTC.Month) && (PA_UserInfo.BdayDay == PA_RTC.Day))
-//        g_bulletNum = BULLET_MAX;
-
     PA_LoadSpritePal(0, 1, (void*)bullet_Pal);
     g_bullet_gfx = PA_CreateGfx(g_screen, (void*)bullet_Sprite, OBJ_SIZE_8X8, 1);
 
@@ -272,13 +257,13 @@ void vBulletInitAll(void)
     }
 }
 
-//inline bool bCheckCollisionbyIndex(u16 ii)
-//{
-//    if (PA_Distance(PLANEX+8, PLANEY+8, g_bullet[ii].x+4, g_bullet[ii].y+4) < 8*2)
-//        return TRUE;
-//    else
-//        return FALSE;
-//}
+inline bool bCheckCollisionbyIndex(u16 ii)
+{
+    if (PA_Distance(PLANEX+8, PLANEY+8, g_bullet[ii].x+4, g_bullet[ii].y+4) < 8*2)
+        return TRUE;
+    else
+        return FALSE;
+}
 
 void vMoveBullet(u8 *pGameState)
 {
@@ -292,6 +277,14 @@ void vMoveBullet(u8 *pGameState)
         g_bullet[uIndex].x += g_bullet[uIndex].vx;
         g_bullet[uIndex].y += g_bullet[uIndex].vy;
         PA_SetSpriteXY(g_screen, uIndex+1, g_bullet[uIndex].x, g_bullet[uIndex].y);
+
+        if (bCheckCollisionbyIndex(uIndex))
+        {
+            PA_SetSpriteAnim(g_screen, 0, 3);
+            vSoundPlayExplode();
+            *pGameState = Game_Statis;
+            return;
+        }
     }
 }
 
@@ -304,162 +297,16 @@ void vDestructSprites(void)
     {
         PA_DeleteSprite(g_screen, uIndex);
     }
-
-    g_count = 0;
-    g_bulletNum = BULLET_MIN;
 }
 
-void vGameStatistic(u8 *pGameState)
+void vGameStatis(u8 *pGameState)
 {
-    vShowScore();
-
-    while(1)
+    if(Pad.Newpress.Anykey || Stylus.Newpress)
     {
-        if (Pad.Newpress.B)
-        {
-            *pGameState = Menu_Init;
-            PA_ClearTextBg(0);
-            PA_ClearTextBg(1);
-            return;
-        }
-        else if (Pad.Newpress.X)
-        {
-            *pGameState = Game_Init;
-            PA_ClearTextBg(0);
-            PA_ClearTextBg(1);
-            return;
-        }
+        vDestructSprites();
+        g_count = 0;
+        g_bulletNum = BULLET_MIN;
 
-        PA_WaitForVBL();
-    }
-}
-
-#ifdef SAVE_DATA
-/**************************
-*    szBufLen <= 32 bytes
-*
-**************************/
-void vInputName(char* szBuf, int *iLength)
-{
-    int nletter = 0;
-    char letter = 0;
-
-    PA_InitText(1, 0);
-    PA_InitText(0, 0);
-
-    PA_InitKeyboard(2); // Initialize KeyBoard
-    PA_KeyboardIn(20, 95);
-    PA_OutputSimpleText(0, 1, 3, "Please input your name: ");
-
-    while (1)
-    {
-        letter = PA_CheckKeyboard();
-
-        if(nletter > 32)
-            break;
-
-        if (letter > 31)
-        {
-            szBuf[nletter] = letter;
-            nletter++;
-        }
-        else if ((letter == PA_BACKSPACE)&&nletter) // Backspace pressed
-        {
-            nletter--;
-            szBuf[nletter] = ' '; // Erase the last letter
-        }
-        else if (letter == '\n' && nletter!=0) // Enter pressed
-            break;
-
-        PA_OutputSimpleText(0, 1, 4, szBuf); // Write the text
-        PA_WaitForVBL();
-    }
-
-    PA_KeyboardOut();
-    PA_ClearTextBg(0);
-
-    *iLength = nletter;
-}
-
-void vShowScore(void)
-{
-    Save    sData;
-    int     ii;
-
-    PA_ClearTextBg(1);
-
-    PA_OutputSimpleText(1, 12, 3,"Top 10");
-    PA_OutputSimpleText(1, 1, 4,"-----------------------------");
-
-    if (0 == iLoadData(&sData))
-    {
-        for (ii=0; ii<MAX_SAVE_ITEM; ii++)
-        {
-            PA_OutputText(1, 5, ii+6, "%02d, %s, %d.%02ds, %d\n", ii+1,
-                    sData.top[ii].szUsername,
-                    sData.top[ii].count/60,
-                    sData.top[ii].count%60,
-                    sData.top[ii].bulletNum);
-        }
-    }
-    else
-    {
-        PA_OutputSimpleText(1, 11, 8,"ERROR!!!");
-    }
-
-    PA_OutputSimpleText(1, 0, 22, "Press <B> to Main Menu..");
-    PA_OutputSimpleText(1, 0, 23, "Press <X> to Restart..");
-}
-#endif
-
-void vSaveFileData(void)
-{
-    Score score;
-    int position;
-    int iLength;
-    char szBuf[60];
-
-    score.count = g_count;
-    score.bulletNum = g_bulletNum;
-
-    vDestructSprites();
-    PA_WaitForVBL();
-
-    position = getPosition(score.count, score.bulletNum);
-
-    vShowResult(position, score);
-
-    if (position>= 0 && position < MAX_SAVE_ITEM)
-    {
-        memset(szBuf, 0, 60);
-
-        vInputName(szBuf, &iLength); //max length < 32 bytes
-        memcpy(score.szUsername, szBuf, iLength);
-
-        //show congratulation message
-        position = iSaveData(&score);
-    }
-}
-
-void vShowResult(int position, Score score)
-{
-    PA_InitText(0, 0);
-
-    if (position>= 0 && position < MAX_SAVE_ITEM)
-        PA_OutputSimpleText(0, 8, 9, "congratulations!");
-    else
-        PA_OutputSimpleText(0, 8, 9, "Sorry.U are out!");
-
-    PA_OutputText(0, 10, 11, "Time: %d.%02ds", score.count/60, score.count%60);
-    PA_OutputText(0, 10, 12, "Bullet: %d", score.bulletNum);
-    PA_OutputSimpleText(0, 0, 23, "Press <anykey> to Continue..");
-
-    PA_WaitForVBL();
-
-    while(1)
-    {
-        if (Pad.Newpress.Anykey)
-            break;
-        PA_WaitForVBL();
+        *pGameState = Game_Init;
     }
 }

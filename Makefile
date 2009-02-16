@@ -17,7 +17,7 @@ ARM7_SELECTED = ARM7_BASIC
 # If you're using EFS_lib, uncomment "USE_EFS = YES" here.
 #---------------------------------------------------------------------------------
 
-USE_EFS = YES
+#USE_EFS = YES
 
 PATH := $(DEVKITARM)/bin:$(PATH)
 PROGNAME = TKKNDS

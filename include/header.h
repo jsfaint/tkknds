@@ -4,21 +4,23 @@
 #if !defined(_PA_MAIN)
 #include <PA9.h>
 #endif
+#if !defined(ALL_GFX_H)
+#include "../source/gfx/all_gfx.h" // Gfx include for the header (.h)
+#endif
 
-#define VERSION "v0.91"
-#define STYLUS_CONTRL
-#define SAVE_DATA
+#define VERSION "v0.3"
+#define STYLUS_CONTRL 1
 
 #define BULLET_MIN 50
 #define BULLET_MAX 100
-#define BULLET_INCREASE_INTEVAL 3 // 3 seconds
+#define BULLET_INCREASE_INTEVAL 3
 
 enum GameStatus{
     Menu_Init = 0,
     Menu_Show,
     Game_Init,
     Game_Play,
-    Game_Statistic,
+    Game_Statis,
     Game_Pause
 };
 
