@@ -2,6 +2,19 @@
 = History =
 This page is the update history of TKKN DS .
 ----
+*v0.91*
+Implement the top 10 list.
+Add display result before show score list.
+Add background music. (The music come from CONTRA which is a NES game made by KONAMI in 1988)
+Add version information.
+Modify the main menu.
+Fix Score list bug...
+Fix stylus control issue.
+Remove efsroot from subversion control. (because of the bad compatibility)
+
+PS: There was a v0.4 in my subversion, but I never release it.
+
+----
 *v0.3*
 
 Add Stylus control, now you can play with pad and stylus.
