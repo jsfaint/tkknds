@@ -27,6 +27,7 @@ PS: There was a v0.4 in my subversion, but I never release it.
 *v0.3*
 
 Add Stylus control, now you can play with pad and stylus.
+
 Modify the game initial, the sum of bullet add 1 every 5 seconds.
 
 Becase of googlecode's role, that when a file first made download available to users, it became part of the history of the project, I can't delete or modify the old file anymore.
