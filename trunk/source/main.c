@@ -100,7 +100,7 @@ int InitFileSys(void)
         return false;
     }
     
-    // Check if test.mp3 is there, regardless if libfat or EFS_Lib is used
+    // Check if bgm.mp3 is there, regardless if libfat or EFS_Lib is used
     MP3FILE* file = FILE_OPEN("bgm.mp3");
     if (!file) {
         PA_OutputText(0, 1, 1, "bgm.mp3 not found !!!");
@@ -108,14 +108,6 @@ int InitFileSys(void)
         return false;
     }
     FILE_CLOSE(file);
-    
-    MP3FILE *file1 = FILE_OPEN("op.mp3");
-    if (!file) {
-        PA_OutputText(0, 1, 1, "op.mp3 not found !!!");
-        PA_WaitFor(Stylus.Newpress || Pad.Newpress.Anykey);
-        return false;
-    }
-    FILE_CLOSE(file1);
     
     return true;
 }

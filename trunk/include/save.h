@@ -11,7 +11,7 @@
 #define MAX_SAVE_ITEM     10
 #define MAX_NAME_LEN    32
 #define SAVE_SIGNATURE "TKKNDS"
-#define FILENAME "TKKNDS.dat"
+#define FILENAME "fat:/TKKNDS.dat"
 
 /************* Structure ************/
 typedef struct {

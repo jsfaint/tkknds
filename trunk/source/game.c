@@ -368,7 +368,7 @@ void vInputName(char* szBuf, int *iLength)
             nletter--;
             szBuf[nletter] = ' '; // Erase the last letter
         }
-        else if (letter == '\n' && nletter!=0) // Enter pressed
+        else if ((letter == '\n' || Pad.Newpress.A) && nletter!=0) // Enter pressed
             break;
 
         PA_OutputSimpleText(0, 1, 4, szBuf); // Write the text
