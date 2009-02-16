@@ -5,7 +5,7 @@
 #include <PA9.h>
 #endif
 
-#define VERSION "v0.91"
+#define VERSION "v0.9"
 #define STYLUS_CONTRL
 #define SAVE_DATA
 

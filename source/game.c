@@ -36,7 +36,6 @@ void vBulletInitAll(void);
 void vDestructSprites(void);
 void vInputName(char* szBuf, int *iLength);
 void vSaveFileData(void);
-void vShowResult(int position, Score score);
 
 s32 iGameInit(u8 *pGameState)
 {
@@ -80,10 +79,10 @@ void vGamePlay(u8 *pGameState)
 
         if(bCheckCollision())
         {
-            *pGameState = Game_Statistic;
             PA_SetSpriteAnim(g_screen, 0, 3);
             AS_MP3Stop();
             vSoundPlayExplode();
+            *pGameState = Game_Statistic;
             vSaveFileData();
             return;
         }
@@ -152,7 +151,7 @@ static void vMovePlane(void)
     }
 
     else if (Stylus.Released)
-        PA_SetSpriteAnim(g_screen, 0, 0); // stop, display 0
+        PA_SetSpriteAnim(g_screen, 0, 0); // stop, display 0        
 #endif
 
     g_plane.x += (Pad.Held.Right - Pad.Held.Left)<<8;
@@ -168,7 +167,7 @@ static void vMovePlane(void)
         PA_SetSpriteAnim(g_screen, 0, 2);
     else if (Pad.Released.Right)
         PA_SetSpriteAnim(g_screen, 0, 0);
-
+    
     if (PLANEX <= 0)
         g_plane.x = 0;
     else if (PLANEX  >= (SCREEN_WIDTH-PLANE_W))
@@ -337,7 +336,7 @@ void vGameStatistic(u8 *pGameState)
 #ifdef SAVE_DATA
 /**************************
 *    szBufLen <= 32 bytes
-*
+*   
 **************************/
 void vInputName(char* szBuf, int *iLength)
 {
@@ -347,7 +346,7 @@ void vInputName(char* szBuf, int *iLength)
     PA_InitText(1, 0);
     PA_InitText(0, 0);
 
-    PA_InitKeyboard(2); // Initialize KeyBoard
+    PA_InitKeyboard(2); // Initialize KeyBoard    
     PA_KeyboardIn(20, 95);
     PA_OutputSimpleText(0, 1, 3, "Please input your name: ");
 
@@ -357,7 +356,7 @@ void vInputName(char* szBuf, int *iLength)
 
         if(nletter > 32)
             break;
-
+        
         if (letter > 31)
         {
             szBuf[nletter] = letter;
@@ -370,11 +369,11 @@ void vInputName(char* szBuf, int *iLength)
         }
         else if (letter == '\n' && nletter!=0) // Enter pressed
             break;
-
+        
         PA_OutputSimpleText(0, 1, 4, szBuf); // Write the text
         PA_WaitForVBL();
     }
-
+    
     PA_KeyboardOut();
     PA_ClearTextBg(0);
 
@@ -406,9 +405,9 @@ void vShowScore(void)
     {
         PA_OutputSimpleText(1, 11, 8,"ERROR!!!");
     }
-
-    PA_OutputSimpleText(1, 0, 22, "Press <B> to Main Menu..");
-    PA_OutputSimpleText(1, 0, 23, "Press <X> to Restart..");
+    
+    PA_OutputSimpleText(1, 0, 22, "<Press B to Main Menu..>");
+    PA_OutputSimpleText(1, 0, 23, "<Press X to Restart..>");
 }
 #endif
 
@@ -418,7 +417,7 @@ void vSaveFileData(void)
     int position;
     int iLength;
     char szBuf[60];
-
+    
     score.count = g_count;
     score.bulletNum = g_bulletNum;
 
@@ -426,8 +425,6 @@ void vSaveFileData(void)
     PA_WaitForVBL();
 
     position = getPosition(score.count, score.bulletNum);
-
-    vShowResult(position, score);
 
     if (position>= 0 && position < MAX_SAVE_ITEM)
     {
@@ -439,27 +436,11 @@ void vSaveFileData(void)
         //show congratulation message
         position = iSaveData(&score);
     }
-}
-
-void vShowResult(int position, Score score)
-{
-    PA_InitText(0, 0);
-
-    if (position>= 0 && position < MAX_SAVE_ITEM)
-        PA_OutputSimpleText(0, 8, 9, "congratulations!");
-    else
-        PA_OutputSimpleText(0, 8, 9, "Sorry.U are out!");
-
-    PA_OutputText(0, 10, 11, "Time: %d.%02ds", score.count/60, score.count%60);
-    PA_OutputText(0, 10, 12, "Bullet: %d", score.bulletNum);
-    PA_OutputSimpleText(0, 0, 23, "Press <anykey> to Continue..");
-
+//    else
+//    {
+//        //show out of list message
+//        PA_OutputSimpleText(1, 1, 10, "Sorry, you are out of list.");
+//    }
+    
     PA_WaitForVBL();
-
-    while(1)
-    {
-        if (Pad.Newpress.Anykey)
-            break;
-        PA_WaitForVBL();
-    }
 }

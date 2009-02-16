@@ -1,5 +1,5 @@
 /*++
-Copyright ? 2008
+Copyright ? 2008 
 
 Module Name:
     menu.c
@@ -34,21 +34,12 @@ void vMenuInit(u8 *gameState)
     //PA_SetBgPalCol(0, 4, PA_RGB(0, 31, 0));
     //PA_Init8bitBg(0, 3);
     //PA_CenterSmartText(0, 0, 100, 255, 120, "Touch to Start!", 2, 4, 1);
-
+    
     PA_SetBgPalCol(1, 1, PA_RGB(31, 31, 31));
     PA_Init8bitBg(1, 3);
-    PA_InitText(1, 0);
-    PA_InitText(0, 0);
 
+    
     PA_CenterSmartText(1, 0, 100, 255, 120, "TKKN DS", 1, 4, 1);
-
-
-    PA_OutputSimpleText(g_screen,11,10,"Game Start");
-    PA_OutputSimpleText(g_screen,11,12,"Game Score");
-
-    PA_OutputText(1, 26, 22, "%s", VERSION);
-    PA_OutputText(0, 15, 23, "TKKN DS Team 2009");
-
     *gameState = Menu_Show;
 //    while(1)
 //   {
@@ -57,10 +48,10 @@ void vMenuInit(u8 *gameState)
 //            *gameState = Menu_Show;
 //            break;
 //        }
-//
+//        
 //        PA_WaitForVBL();
 //    }
-//
+//    
 //    PA_Clear8bitBg(0); //clear screen 0
 }
 
@@ -73,7 +64,13 @@ enum GameMenu
 void vMenuShow(u8 *gameState)
 {
     int iSelect = 0;
-
+    
+    PA_InitText(1, 0);
+    PA_InitText(0, 0);
+    
+    PA_OutputSimpleText(g_screen,11,10,"Game Start");
+    PA_OutputSimpleText(g_screen,11,12,"Game Score");
+    
     while(1)
     {
         if (Pad.Newpress.Up)
@@ -85,7 +82,7 @@ void vMenuShow(u8 *gameState)
             iSelect = 1;
         else if (iSelect > 1)
             iSelect = 0;
-
+        
         switch(iSelect)
         {
             case START_GAME:
@@ -121,7 +118,7 @@ void vMenuShow(u8 *gameState)
             default:
                 break;
         }
-
+        
         PA_WaitForVBL();
     }
 }
