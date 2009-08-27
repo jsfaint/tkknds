@@ -11,11 +11,18 @@ typedef struct{
     s32 y;
 } Plane;
 
+typedef enum BULLETTYPE{
+    normal,
+    hunter,
+    explode,
+} BulletType;
+
 typedef struct{
 	s16 x;
     s16 y;
 	s16 vx;
     s16 vy;
+    BulletType bulletType;
 } Bullet;
 
 /************ Macro *************/
