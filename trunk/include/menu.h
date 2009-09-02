@@ -1,9 +1,7 @@
 #ifndef __MENU_H__
 #define __MENU_H__
 
-#if !defined(__HEADER_H__)
 #include "header.h"
-#endif
 
 //menu.c
 void vMenuInit(u8 *gameState);

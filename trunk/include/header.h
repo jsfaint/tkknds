@@ -1,9 +1,7 @@
 #ifndef __HEADER_H__
 #define __HEADER_H__
 
-#if !defined(_PA_MAIN)
 #include <PA9.h>
-#endif
 
 #define VERSION "v0.91"
 #define STYLUS_CONTRL

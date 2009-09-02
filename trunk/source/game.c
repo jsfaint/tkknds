@@ -11,9 +11,7 @@ Author:
 #include "game.h"
 #include "gfx/all_gfx.c"
 #ifdef SAVE_DATA
-#if !defined(__SAVE_H__)
 #include "save.h"
-#endif
 #endif
 
 #define PLANEX  (g_plane.x>>8)
