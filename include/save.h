@@ -1,9 +1,7 @@
 #ifndef __SAVE_H__
 #define __SAVE_H__
 
-#if !defined(__HEADER_H__)
 #include "header.h"
-#endif
 
 #define SUCCESS 0
 #define FAILED  -1

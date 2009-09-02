@@ -1,18 +1,10 @@
 // Includes
 #include <PA9.h>
 #include "efs_lib.h"
-#if !defined(__HEADER_H__)
 #include "header.h"
-#endif
-#if !defined(__MENU_H__)
 #include "menu.h"
-#endif
-#if !defined(__GAME_H__)
 #include "game.h"
-#endif
-#if !defined(__SOUND_H__)
 #include "sound.h"
-#endif
 
 u8  g_screen = 0;
 bool  g_bLibfat = 0;

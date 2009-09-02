@@ -1,9 +1,7 @@
 #ifndef __GAME_H__
 #define __GAME_H__
 
-#if !defined(__HEADER_H__)
 #include "header.h"
-#endif
 
 /************* Structure ************/
 typedef struct{
