@@ -1,7 +1,9 @@
 #ifndef __SAVE_H__
 #define __SAVE_H__
 
+#if !defined(__HEADER_H__)
 #include "header.h"
+#endif
 
 #define SUCCESS 0
 #define FAILED  -1
@@ -13,13 +15,13 @@
 
 /************* Structure ************/
 typedef struct {
-	unsigned char szUsername[MAX_NAME_LEN];
-	unsigned long count;
-	unsigned char bulletNum;
+    unsigned char szUsername[MAX_NAME_LEN];
+    unsigned long count;
+    unsigned char bulletNum;
 } Score;
 
 typedef struct {
-	Score   top[MAX_SAVE_ITEM];
+    Score   top[MAX_SAVE_ITEM];
 } Save, *PSave;
 
 /*************Function**************/

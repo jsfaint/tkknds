@@ -1,26 +1,21 @@
 #ifndef __GAME_H__
 #define __GAME_H__
 
+#if !defined(__HEADER_H__)
 #include "header.h"
+#endif
 
 /************* Structure ************/
 typedef struct{
 	s32 x;
-	s32 y;
+    s32 y;
 } Plane;
-
-typedef enum BULLETTYPE{
-	normal,
-	hunter,
-	explode,
-} BulletType;
 
 typedef struct{
 	s16 x;
-	s16 y;
+    s16 y;
 	s16 vx;
-	s16 vy;
-	BulletType bulletType;
+    s16 vy;
 } Bullet;
 
 /************ Macro *************/

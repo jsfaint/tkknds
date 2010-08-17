@@ -1,25 +1,25 @@
 #ifndef __HEADER_H__
 #define __HEADER_H__
 
+#if !defined(_PA_MAIN)
 #include <PA9.h>
+#endif
 
-#define VERSION "v0.91 patch 1"
+#define VERSION "v0.91"
 #define STYLUS_CONTRL
 #define SAVE_DATA
 
-#define BULLET_INIT 10
 #define BULLET_MIN 50
 #define BULLET_MAX 100
 #define BULLET_INCREASE_INTEVAL 3 // 3 seconds
 
 enum GameStatus{
-	Menu_Init = 0,
-	Menu_Show,
-	Game_Init,
-	Game_Play,
-	Game_Statistic,
-	Game_Pause,
-	Game_Option
+    Menu_Init = 0,
+    Menu_Show,
+    Game_Init,
+    Game_Play,
+    Game_Statistic,
+    Game_Pause
 };
 
 
