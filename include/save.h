@@ -13,13 +13,13 @@
 
 /************* Structure ************/
 typedef struct {
-    unsigned char szUsername[MAX_NAME_LEN];
-    unsigned long count;
-    unsigned char bulletNum;
+	unsigned char szUsername[MAX_NAME_LEN];
+	unsigned long count;
+	unsigned char bulletNum;
 } Score;
 
 typedef struct {
-    Score   top[MAX_SAVE_ITEM];
+	Score   top[MAX_SAVE_ITEM];
 } Save, *PSave;
 
 /*************Function**************/
