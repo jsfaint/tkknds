@@ -72,6 +72,10 @@ int main(int argc, char ** argv)
 				vGameStatistic(&gameState);
 				break;
 
+			case Game_Option:
+				vGameOption(&gameState);
+				break;
+
 			default:
 				break;
 		}

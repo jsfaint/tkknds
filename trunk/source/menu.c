@@ -38,8 +38,10 @@ void vMenuInit(u8 *gameState)
 
 	PA_OutputSimpleText(g_screen, 11, 10, "Start");
 	PA_OutputSimpleText(g_screen, 11, 12, "Score");
+#if 0
 	PA_OutputSimpleText(g_screen, 11, 14, "Option");
 	PA_OutputSimpleText(g_screen, 11, 16, "Credit");
+#endif
 
 	PA_OutputText(1, 26, 22, "%s", VERSION);
 
@@ -101,7 +103,7 @@ void vMenuShow(u8 *gameState)
 
 			if (Pad.Newpress.A)
 			{
-				*gameState = Game_Statistic;
+				*gameState = Game_Option;
 				PA_Clear8bitBg(0);
 				PA_Clear8bitBg(1);
 				PA_ClearTextBg(0);

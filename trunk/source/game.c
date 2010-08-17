@@ -514,3 +514,8 @@ void vCreateBullet(u8 index)
 		break;
 	}
 }
+
+void vGameOption(u8 *pGameState)
+{
+
+}

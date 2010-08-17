@@ -12,14 +12,20 @@
 #define FILENAME "fat:/TKKNDS.dat"
 
 /************* Structure ************/
-typedef struct {
+struct {
 	unsigned char szUsername[MAX_NAME_LEN];
 	unsigned long count;
 	unsigned char bulletNum;
 } Score;
 
+struct {
+	unsigned char sound;
+	unsigned char music;
+} Option;
+
 typedef struct {
-	Score   top[MAX_SAVE_ITEM];
+	struct Score   top[MAX_SAVE_ITEM];
+	struct Option option;
 } Save, *PSave;
 
 /*************Function**************/
