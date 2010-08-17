@@ -36,8 +36,3 @@ void vSoundPlayBgm(void)
 	AS_SetMP3Loop(true);
 }
 
-//void vSoundPlayOp(void)
-//{
-//    AS_MP3StreamPlay("op.mp3");
-//    AS_SetMP3Loop(true);
-//}

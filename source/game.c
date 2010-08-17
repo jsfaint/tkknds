@@ -21,27 +21,31 @@ s32 g_count = 0;
 u32 g_bulletNum = BULLET_INIT;
 Plane g_plane;
 Bullet g_bullet[BULLET_MAX];
-u16 g_bullet_gfx;
 u16 g_plane_gfx;
+u16 g_bullet_normal_gfx;
+#if 0
+u16 g_bullet_hunter_gfx;
+u16 g_bullet_explode_gfx;
+#endif
 
 /************** Function *****************/
 static void vPlaneInit(void);
 static void vMovePlane(void);
 bool bCheckCollision();
-void vBulletInit(u16 uIndex);
+void vBulletInit(u8 uIndex);
 void vMoveBullet(u8 *pGameState);
 void vBulletInitAll(void);
 void vDestructSprites(void);
 void vInputName(char* szBuf, int *iLength);
 void vSaveFileData(u8 *pGameState);
 int iShowResult(int position, Score score);
+void vCreateBullet(u8 index);
 
 s32 iGameInit(u8 *pGameState)
 {
 	g_count = 0;
 	// load backgroud
 	PA_EasyBgLoad(g_screen, 0, bg);
-	//PA_EasyBgLoad(1, 0, bg);
 
 	vPlaneInit();
 
@@ -66,17 +70,13 @@ void vGamePlay(u8 *pGameState)
 		//After the bullet number met "BULLET_MIN", add a bullet every interval, about "BULLET_INCREASE_INTEVAL" seconds
 		if (g_count%6==0 && g_bulletNum < BULLET_MIN) {
 			vBulletInit(g_bulletNum);
-			PA_CreateSpriteFromGfx(g_screen, g_bulletNum+1, g_bullet_gfx,
-					OBJ_SIZE_8X8, 1, 1,
-					g_bullet[g_bulletNum].x, g_bullet[g_bulletNum].y);
+			vCreateBullet(g_bulletNum);
 			g_bulletNum++;
 		}
 		else if (g_count%(PA_RTC.FPS*BULLET_INCREASE_INTEVAL)==0 && g_bulletNum<=BULLET_MAX)
 		{
 			vBulletInit(g_bulletNum);
-			PA_CreateSpriteFromGfx(g_screen, g_bulletNum+1, g_bullet_gfx,
-					OBJ_SIZE_8X8, 1, 1,
-					g_bullet[g_bulletNum].x, g_bullet[g_bulletNum].y);
+			vCreateBullet(g_bulletNum);
 			g_bulletNum++;
 		}
 
@@ -216,11 +216,11 @@ bool bCheckCollision()
   initial a bullet
 
 Arguments:
-u16 uIndex; the index of bullet.
+u8 uIndex; the index of bullet.
 Return Value:
 none
  ********************************************/
-void vBulletInit(u16 uIndex)
+void vBulletInit(u8 uIndex)
 {
 #define UP      1
 #define LEFT    2
@@ -230,7 +230,7 @@ void vBulletInit(u16 uIndex)
 	s16 angle;
 	Bullet *pBullet = &g_bullet[uIndex];
 
-	tmp = PA_RandMinMax(1,4);
+	tmp = PA_RandMinMax(1, 4);
 
 	switch(tmp)
 	{
@@ -254,6 +254,13 @@ void vBulletInit(u16 uIndex)
 			break;
 	}
 
+	//bullet type
+#if 0
+	pBullet->type = PA_RandMinMax(0, 2);
+#else
+	pBullet->type = Bullet_Normal;
+#endif
+
 	angle = PA_GetAngle(pBullet->x, pBullet->y, PLANEX, PLANEY);
 	pBullet->vx = PA_Cos(angle)>>8;
 	pBullet->vy = -PA_Sin(angle)>>8;
@@ -261,20 +268,23 @@ void vBulletInit(u16 uIndex)
 
 void vBulletInitAll(void)
 {
-	u16 uIndex;
+	u8 uIndex;
 
-	//    if ((PA_UserInfo.BdayMonth == PA_RTC.Month) && (PA_UserInfo.BdayDay == PA_RTC.Day))
-	//        g_bulletNum = BULLET_MAX;
+	PA_LoadSpritePal(0, 1, (void*)bullet_normal_Pal);
+	g_bullet_normal_gfx = PA_CreateGfx(g_screen, (void*)bullet_normal_Sprite, OBJ_SIZE_8X8, 1);
 
-	PA_LoadSpritePal(0, 1, (void*)bullet_Pal);
-	g_bullet_gfx = PA_CreateGfx(g_screen, (void*)bullet_Sprite, OBJ_SIZE_8X8, 1);
+#if 0
+	PA_LoadSpritePal(0, 1, (void*)bullet_hunter_Pal);
+	g_bullet_hunter_gfx = PA_CreateGfx(g_screen, (void*)bullet_hunter_Sprite, OBJ_SIZE_8X8, 1);
+
+	PA_LoadSpritePal(0, 1, (void*)bullet_explorer_Pal);
+	g_bullet_explode_gfx = PA_CreateGfx(g_screen, (void*)bullet_explorer_Sprite, OBJ_SIZE_8X8, 1);
+#endif
 
 	for (uIndex=0; uIndex<g_bulletNum; uIndex++)
 	{
 		vBulletInit(uIndex);
-		PA_CreateSpriteFromGfx(g_screen, uIndex+1, g_bullet_gfx,
-				OBJ_SIZE_8X8, 1, 1,
-				g_bullet[uIndex].x, g_bullet[uIndex].y);
+		vCreateBullet(uIndex);
 	}
 }
 
@@ -285,10 +295,21 @@ void vMoveBullet(u8 *pGameState)
 	for (uIndex=0; uIndex<g_bulletNum; uIndex++)
 	{
 		if(g_bullet[uIndex].x >= SCREEN_WIDTH || g_bullet[uIndex].x <= 0
-				|| g_bullet[uIndex].y >= SCREEN_HEIGHT || g_bullet[uIndex].y <= 0)
+				|| g_bullet[uIndex].y >= SCREEN_HEIGHT || g_bullet[uIndex].y <= 0) {
 			vBulletInit(uIndex);
-		g_bullet[uIndex].x += g_bullet[uIndex].vx;
-		g_bullet[uIndex].y += g_bullet[uIndex].vy;
+		}
+
+		switch(g_bullet[uIndex].type) {
+			case Bullet_Normal:
+				g_bullet[uIndex].x += g_bullet[uIndex].vx;
+				g_bullet[uIndex].y += g_bullet[uIndex].vy;
+				break;
+			case Bullet_Hunter:
+			case Bullet_Explode:
+			default:
+				break;
+		}
+
 		PA_SetSpriteXY(g_screen, uIndex+1, g_bullet[uIndex].x, g_bullet[uIndex].y);
 	}
 }
@@ -381,8 +402,8 @@ void vInputName(char* szBuf, int *iLength)
 
 void vShowScore(void)
 {
-	Save    sData;
-	int     ii;
+	Save sData;
+	int  ii;
 
 	PA_ClearTextBg(1);
 
@@ -465,5 +486,31 @@ int iShowResult(int position, Score score)
 		if (Pad.Newpress.Anykey)
 			return 0;
 		PA_WaitForVBL();
+	}
+}
+
+void vCreateBullet(u8 index)
+{
+	switch(g_bullet[index].type) {
+	case Bullet_Normal:
+		PA_CreateSpriteFromGfx(g_screen, index+1, g_bullet_normal_gfx,
+				OBJ_SIZE_8X8, 1, 1,
+				g_bullet[index].x, g_bullet[index].y);
+		break;
+#if 0
+	case Bullet_Hunter:
+		PA_CreateSpriteFromGfx(g_screen, index+1, g_bullet_hunter_gfx,
+				OBJ_SIZE_8X8, 1, 1,
+				g_bullet[index].x, g_bullet[index].y);
+		break;
+
+	case Bullet_Explode:
+		PA_CreateSpriteFromGfx(g_screen, index+1, g_bullet_explode_gfx,
+				OBJ_SIZE_8X8, 1, 1,
+				g_bullet[index].x, g_bullet[index].y);
+		break;
+#endif
+	default:
+		break;
 	}
 }

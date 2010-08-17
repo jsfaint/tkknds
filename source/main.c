@@ -45,7 +45,6 @@ int main(int argc, char ** argv)
 		switch(gameState)
 		{
 			case Menu_Init:
-				//vSoundPlayOp();
 				vMenuInit(&gameState);
 				break;
 
@@ -54,7 +53,6 @@ int main(int argc, char ** argv)
 				break;
 
 			case Game_Init:
-				//AS_MP3Stop();
 				iGameInit(&gameState);
 				break;
 
