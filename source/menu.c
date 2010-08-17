@@ -73,7 +73,7 @@ void vMenuShow(u8 *gameState)
 
 		switch(iSelect)
 		{
-		case Menu_start:
+		case Menu_Start:
 			draw_arrow(iSelect);
 
 			if (Pad.Newpress.A)
@@ -153,3 +153,4 @@ void draw_arrow(int iSelect)
 
 	PA_OutputSimpleText(g_screen, 7, 10 + 2*iSelect, "->");
 }
+
