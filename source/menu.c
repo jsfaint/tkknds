@@ -13,6 +13,7 @@ jason (jsfaint@gmail.com) 2008-11-11
 --*/
 
 #include "menu.h"
+#include "save.h"
 
 void draw_arrow(int iSelect);
 void vbirthday(void);
@@ -152,7 +153,7 @@ void draw_arrow(int iSelect)
 }
 
 //game option menu
-void vGameOption(u8 *pGameState);
+void vGameOption(u8 *pGameState)
 {
 	Save sData;
 	u8 music_enb;
