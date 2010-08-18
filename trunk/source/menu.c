@@ -154,3 +154,10 @@ void draw_arrow(int iSelect)
 	PA_OutputSimpleText(g_screen, 7, 10 + 2*iSelect, "->");
 }
 
+void vGameOption(u8 *pGameState);
+{
+	PA_Clear8bitBg(0);
+	PA_Clear8bitBg(1);
+	PA_ClearTextBg(0);
+
+}

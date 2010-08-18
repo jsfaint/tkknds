@@ -521,7 +521,3 @@ void vCreateBullet(u8 index)
 	}
 }
 
-void vGameOption(u8 *pGameState)
-{
-
-}

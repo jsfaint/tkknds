@@ -34,7 +34,6 @@ s32 iGameInit(u8 *pGameState);
 void vGamePlay(u8 *pGameState);
 void vGamePause(u8 *pGameState);
 void vGameStatistic(u8 *pGameState);
-void vGameOption(u8 *pGameState);
 void vShowScore(void);
 
 #endif //__GAME_H__

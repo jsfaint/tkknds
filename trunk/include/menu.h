@@ -7,5 +7,6 @@
 void vMenuInit(u8 *gameState);
 void vMenuShow(u8 *gameState);
 void vSplashScreen(void);
+void vGameOption(u8 *pGameState);
 
 #endif // __MENU_H__
