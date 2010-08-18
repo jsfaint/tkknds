@@ -19,8 +19,8 @@ typedef struct {
 } Score;
 
 typedef struct {
-	unsigned char sound;
-	unsigned char music;
+	unsigned char sound_enable;
+	unsigned char music_enable;
 } Option;
 
 typedef struct {
