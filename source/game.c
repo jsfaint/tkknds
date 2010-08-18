@@ -44,6 +44,7 @@ void vCreateBullet(u8 index);
 s32 iGameInit(u8 *pGameState)
 {
 	g_count = 0;
+	g_bulletNum = BULLET_INIT;
 	// load backgroud
 	PA_EasyBgLoad(g_screen, 0, bg);
 
@@ -203,7 +204,7 @@ bool bCheckCollision()
 	s16 ii;
 	for (ii=0; ii<g_bulletNum; ii++)
 	{
-		if (PA_Distance(PLANEX+8, PLANEY+8, g_bullet[ii].x+4, g_bullet[ii].y+4) < 8*3)
+		if (PA_Distance(PLANEX+8, PLANEY+8, g_bullet[ii].x+4, g_bullet[ii].y+4) < 8*8)
 			return TRUE;
 	}
 
@@ -325,7 +326,7 @@ void vDestructSprites(void)
 	}
 
 	g_count = 0;
-	g_bulletNum = BULLET_MIN;
+	g_bulletNum = BULLET_INIT;
 }
 
 void vGameStatistic(u8 *pGameState)
@@ -448,6 +449,8 @@ void vSaveFileData(u8 *pGameState)
 
 	if (iShowResult(position, score) == 1) {
 		*pGameState = Game_Init;
+		PA_ClearTextBg(0);
+		PA_ClearTextBg(1);
 		return;
 	}
 
@@ -473,8 +476,8 @@ int iShowResult(int position, Score score)
 
 	PA_OutputText(0, 10, 11, "Time: %d.%02ds", score.count/60, score.count%60);
 	PA_OutputText(0, 10, 12, "Bullet: %d", score.bulletNum);
-	PA_OutputSimpleText(0, 0, 22, "Press <X> to restart game.");
-	PA_OutputSimpleText(0, 0, 23, "Press <Anykey> to see score list.");
+	PA_OutputSimpleText(0, 0, 22, "Press <X> to restart.");
+	PA_OutputSimpleText(0, 0, 23, "Press <Y> to continue.");
 
 	PA_WaitForVBL();
 
@@ -483,8 +486,11 @@ int iShowResult(int position, Score score)
 		if (Pad.Newpress.X) {
 			return 1;
 		}
-		if (Pad.Newpress.Anykey)
+
+		if (Pad.Newpress.Y) {
 			return 0;
+		}
+
 		PA_WaitForVBL();
 	}
 }

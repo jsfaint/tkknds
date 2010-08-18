@@ -32,7 +32,7 @@ ADD_LIBS +=
 
 TEXT1 	:= TKKNDS
 TEXT2 	:= A clone of TKKN99
-TEXT3 	:= made by jason
+TEXT3 	:= jsfaint@gmail.com
 ICON 	:= -b $(CURDIR)/../logo.bmp
 
 #---------------------------------------------------------------------------------

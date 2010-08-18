@@ -10,7 +10,7 @@
 #define BULLET_INIT 10
 #define BULLET_MIN 50
 #define BULLET_MAX 100
-#define BULLET_INCREASE_INTEVAL 3 // 3 seconds
+#define BULLET_INCREASE_INTEVAL 2 // 2 seconds
 
 enum GameStatus{
 	Menu_Init = 0,
