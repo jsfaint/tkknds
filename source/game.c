@@ -10,9 +10,6 @@ jason (jsfaint@gmail.com) 2008-11-12
 
 #include "game.h"
 #include "gfx/all_gfx.c"
-#ifdef SAVE_DATA
-#include "save.h"
-#endif
 
 #define PLANEX  (g_plane.x>>8)
 #define PLANEY  (g_plane.y>>8)
@@ -27,6 +24,8 @@ u16 g_bullet_normal_gfx;
 u16 g_bullet_hunter_gfx;
 u16 g_bullet_explode_gfx;
 #endif
+
+Option g_option;
 
 /************** Function *****************/
 static void vPlaneInit(void);
@@ -59,6 +58,13 @@ s32 iGameInit(u8 *pGameState)
 
 void vGamePlay(u8 *pGameState)
 {
+	if (g_option.music_enable) {
+		vSoundPlayBgm();
+		PA_WaitForVBL();
+		PA_WaitForVBL();
+		PA_WaitForVBL();
+	}
+
 	while(*pGameState == Game_Play)
 	{
 		g_count++;
@@ -90,7 +96,11 @@ void vGamePlay(u8 *pGameState)
 			*pGameState = Game_Statistic;
 			PA_SetSpriteAnim(g_screen, 0, 3);
 			AS_MP3Stop();
-			vSoundPlayExplode();
+
+			if (g_option.sound_enable) {
+				vSoundPlayExplode();
+			}
+
 			vSaveFileData(pGameState);
 			return;
 		}

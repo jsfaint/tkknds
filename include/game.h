@@ -2,6 +2,9 @@
 #define __GAME_H__
 
 #include "header.h"
+#ifdef SAVE_DATA
+#include "save.h"
+#endif
 
 /************* Structure ************/
 typedef struct{
@@ -23,6 +26,8 @@ typedef struct{
 	s16 vy;
 	BulletType type;
 } Bullet;
+
+extern Option g_option;
 
 /************ Macro *************/
 //plane size

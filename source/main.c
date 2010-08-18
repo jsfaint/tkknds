@@ -4,7 +4,7 @@
 #include "header.h"
 #include "menu.h"
 #include "game.h"
-#include "sound.h"
+//#include "sound.h"
 
 u8  g_screen = 0;
 bool  g_bLibfat = 0;
@@ -28,6 +28,7 @@ int main(int argc, char ** argv)
 	if (g_bLibfat)
 	{
 		iCheckData();
+		iGetOption();
 	}
 	PA_OutputSimpleText(g_screen,5,10,"                  ");
 	PA_OutputSimpleText(g_screen,5,11,"                  ");
@@ -57,10 +58,6 @@ int main(int argc, char ** argv)
 				break;
 
 			case Game_Play:
-				vSoundPlayBgm();
-				PA_WaitForVBL();
-				PA_WaitForVBL();
-				PA_WaitForVBL();
 				vGamePlay(&gameState);
 				break;
 

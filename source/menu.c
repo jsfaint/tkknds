@@ -18,6 +18,8 @@ jason (jsfaint@gmail.com) 2008-11-11
 void draw_arrow(int iSelect);
 void vbirthday(void);
 
+extern Option g_option;
+
 /***********************************************************
   void MenuInit(void);
 
@@ -156,16 +158,7 @@ void draw_arrow(int iSelect)
 void vGameOption(u8 *pGameState)
 {
 	Save sData;
-	u8 music_enb;
-	u8 sound_enb;
 	u8 row = 0;
-
-	if(-1 ==  iLoadData(&sData)) {
-		return;
-	}
-
-	music_enb = sData.option.music_enable;
-	sound_enb = sData.option.sound_enable;
 
 	PA_Clear8bitBg(0);
 	PA_Clear8bitBg(1);
@@ -175,14 +168,14 @@ void vGameOption(u8 *pGameState)
 	PA_OutputSimpleText(g_screen, 5, 14, "Sound");
 
 	while(1) {
-		if (music_enb) {
+		if (g_option.music_enable) {
 			PA_OutputSimpleText(g_screen, 5, 11, "-> On      OFF");
 		}
 		else {
 			PA_OutputSimpleText(g_screen, 5, 11, "   On   -> OFF");
 		}
 		
-		if (sound_enb) {
+		if (g_option.sound_enable) {
 			PA_OutputSimpleText(g_screen, 5, 15, "-> On      OFF");
 		}
 		else {

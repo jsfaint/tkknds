@@ -9,10 +9,11 @@ jason (jsfaint@gmail.com) 2008-12-10
 --*/
 #include "save.h"
 
-
 void vWriteDefault();
 int iWritetoFile(Save sData);
 int iInsertData(Score *pScore,  int *position);//insert the data
+
+extern Option g_option;
 
 void vWriteDefault()
 {
@@ -189,5 +190,35 @@ int iSaveData(Score *pScore)
 		return position;
 	else
 		return MAX_SAVE_ITEM;
+}
+
+//game option
+int iGetOption(void)
+{
+	Save sData;
+	if (iLoadData(&sData) == SUCCESS) {
+		g_option.music_enable = sData.option.music_enable;
+		g_option.sound_enable = sData.option.sound_enable;
+		return SUCCESS;
+	}
+	
+	return FAILED;
+}
+
+int iSetOption(void)
+{
+	Save sData;
+	if (iLoadData(&sData) == FAILED) {
+		return FAILED;
+	}
+
+	sData.option.music_enable = g_option.music_enable;
+	sData.option.sound_enable = g_option.sound_enable;
+
+	if (iWritetoFile(sData) == SUCCESS) {
+		return SUCCESS;
+	}
+
+	return FAILED;
 }
 
