@@ -91,7 +91,7 @@ void vGamePlay(u8 *pGameState)
 			PA_SetSpriteAnim(g_screen, 0, 3);
 			AS_MP3Stop();
 			vSoundPlayExplode();
-			vSaveFileData(*pGameState);
+			vSaveFileData(pGameState);
 			return;
 		}
 
