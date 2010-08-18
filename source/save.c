@@ -30,6 +30,9 @@ void vWriteDefault()
 		sData.top[iIndex].bulletNum = 0;
 	}
 
+	sData.option.music_enable = 1;
+	sData.option.sound_enable = 1;
+
 	fd = fopen(FILENAME, "wb");
 	if (fd != NULL)
 	{
@@ -48,21 +51,21 @@ int iCheckData(void)
 
 
 	fd = fopen(FILENAME, "rb");
-	if (fd != NULL)
-	{
+	if (fd != NULL) {
 		ret = fread(signature, sizeof(SAVE_SIGNATURE), 1, fd);
 		fclose(fd);
 
-		if (strcmp(signature, SAVE_SIGNATURE) != 0)
-		{
+		if (strcmp(signature, SAVE_SIGNATURE) != 0) {
 			vWriteDefault();
 			return FAILED;
 		}
-		else
+		else {
 			return SUCCESS;
+		}
 	}
-	else
+	else {
 		vWriteDefault();
+	}
 
 	return FAILED;
 }
@@ -79,10 +82,14 @@ int getPosition(long count, int bulletNum)
 	for (ii=0; ii<MAX_SAVE_ITEM; ii++)
 	{
 		if (count > sData.top[ii].count) //compare count first
+		{
 			return ii;
+		}
 		else if (count == sData.top[ii].count) //if count equal, compare bullet
+		{
 			if (bulletNum > sData.top[ii].bulletNum)
 				return ii;
+		}
 	}
 }
 
@@ -119,6 +126,7 @@ int iWritetoFile(Save sData)
 			ret = fwrite(SAVE_SIGNATURE, sizeof(SAVE_SIGNATURE), 1, fd);
 			ret = fwrite(&sData, sizeof(Save), 1, fd);
 			fclose(fd);
+
 			return SUCCESS;
 		}
 	}

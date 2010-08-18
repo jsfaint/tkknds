@@ -129,7 +129,6 @@ void vSplashScreen(void)
 
 void vbirthday(void)
 {
-	int i;
 	if ((PA_UserInfo.BdayMonth == PA_RTC.Month) && (PA_UserInfo.BdayDay == PA_RTC.Day))
 	{
 		PA_OutputText(0, 2, 6, "Hi %s,", PA_UserInfo.Name);
@@ -140,8 +139,6 @@ void vbirthday(void)
 
 		PA_WaitFor(Stylus.Newpress || Pad.Newpress.Anykey);
 	}
-	else
-		return;
 }
 
 void draw_arrow(int iSelect)
@@ -154,10 +151,48 @@ void draw_arrow(int iSelect)
 	PA_OutputSimpleText(g_screen, 7, 10 + 2*iSelect, "->");
 }
 
+//game option menu
 void vGameOption(u8 *pGameState);
 {
+	Save sData;
+	u8 music_enb;
+	u8 sound_enb;
+	u8 row = 0;
+
+	if(-1 ==  iLoadData(&sData)) {
+		return;
+	}
+
+	music_enb = sData.option.music_enable;
+	sound_enb = sData.option.sound_enable;
+
 	PA_Clear8bitBg(0);
 	PA_Clear8bitBg(1);
 	PA_ClearTextBg(0);
+
+	PA_OutputSimpleText(g_screen, 5, 10, "Music");
+	PA_OutputSimpleText(g_screen, 5, 14, "Sound");
+
+	while(1) {
+		if (music_enb) {
+			PA_OutputSimpleText(g_screen, 5, 11, "-> On      OFF");
+		}
+		else {
+			PA_OutputSimpleText(g_screen, 5, 11, "   On   -> OFF");
+		}
+		
+		if (sound_enb) {
+			PA_OutputSimpleText(g_screen, 5, 15, "-> On      OFF");
+		}
+		else {
+			PA_OutputSimpleText(g_screen, 5, 15, "   On   -> OFF");
+		}
+
+
+		if (Pad.Newpress.B) {
+			break;
+		}
+	}
+
 
 }
