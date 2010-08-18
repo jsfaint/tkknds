@@ -34,4 +34,6 @@ int getPosition(long count, int bulletNum);
 int iLoadData(PSave psData);
 int iSaveData(Score *pScore);
 
+int iGetOption(void);
+int iSetOption(void);
 #endif //__SAVE_H__
