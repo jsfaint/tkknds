@@ -487,7 +487,7 @@ int iShowResult(int position, Score score)
 	PA_OutputText(0, 10, 11, "Time: %d.%02ds", score.count/60, score.count%60);
 	PA_OutputText(0, 10, 12, "Bullet: %d", score.bulletNum);
 	PA_OutputSimpleText(0, 0, 22, "Press <X> to restart.");
-	PA_OutputSimpleText(0, 0, 23, "Press <Anykey> to top10 list.");
+	PA_OutputSimpleText(0, 0, 23, "Press <B> to save result.");
 
 	PA_WaitForVBL();
 
@@ -497,7 +497,7 @@ int iShowResult(int position, Score score)
 			return 1;
 		}
 
-		if (Pad.Newpress.Anykey) {
+		if (Pad.Newpress.B) {
 			return 0;
 		}
 
