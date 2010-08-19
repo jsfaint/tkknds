@@ -11,9 +11,7 @@ jason (jsfaint@gmail.com) 2008-12-10
 
 void vWriteDefault();
 int iWritetoFile(Save sData);
-int iInsertData(Score *pScore,  int *position);//insert the data
-
-extern Option g_option;
+int iInsertData(Score score,  int *position);//insert the data
 
 void vWriteDefault()
 {
@@ -135,13 +133,10 @@ int iWritetoFile(Save sData)
 	return FAILED;
 }
 
-int iInsertData(Score *pScore, int *position)
+int iInsertData(Score score, int *position)
 {
 	Save sData;
-	Score score;
 	int ii = 0, tmp;
-
-	memcpy(&score, pScore, sizeof(Score));
 
 	if(FAILED == iLoadData(&sData))
 		return FAILED;
@@ -182,38 +177,38 @@ int iInsertData(Score *pScore, int *position)
 	return FAILED;
 }
 
-int iSaveData(Score *pScore)
+int iSaveData(Score score)
 {
 	int position;
 
-	if(SUCCESS == iInsertData(pScore,  &position))
+	if(SUCCESS == iInsertData(score,  &position))
 		return position;
 	else
 		return MAX_SAVE_ITEM;
 }
 
 //game option
-int iGetOption(void)
+int iGetOption(POption pOption)
 {
 	Save sData;
 	if (iLoadData(&sData) == SUCCESS) {
-		g_option.music_enable = sData.option.music_enable;
-		g_option.sound_enable = sData.option.sound_enable;
+		pOption->music_enable = sData.option.music_enable;
+		pOption->sound_enable = sData.option.sound_enable;
 		return SUCCESS;
 	}
 	
 	return FAILED;
 }
 
-int iSetOption(void)
+int iSetOption(Option option)
 {
 	Save sData;
 	if (iLoadData(&sData) == FAILED) {
 		return FAILED;
 	}
 
-	sData.option.music_enable = g_option.music_enable;
-	sData.option.sound_enable = g_option.sound_enable;
+	sData.option.music_enable = option.music_enable;
+	sData.option.sound_enable = option.sound_enable;
 
 	if (iWritetoFile(sData) == SUCCESS) {
 		return SUCCESS;
