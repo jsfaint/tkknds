@@ -168,6 +168,15 @@ void vGameOption(u8 *pGameState)
 	PA_OutputSimpleText(g_screen, 10, 14, "Sound");
 
 	while(1) {
+		if (row) {
+			PA_OutputSimpleText(g_screen, 6, 10, " ");
+			PA_OutputSimpleText(g_screen, 6, 14, "*");
+		}
+		else {
+			PA_OutputSimpleText(g_screen, 6, 10, "*");
+			PA_OutputSimpleText(g_screen, 6, 14, " ");
+		}
+
 		if (g_option.music_enable) {
 			PA_OutputSimpleText(g_screen, 8, 11, "-> On      OFF");
 		}
@@ -184,14 +193,6 @@ void vGameOption(u8 *pGameState)
 
 		if (Pad.Newpress.Up || Pad.Newpress.Down) {
 			row = !row;
-			if (row) {
-				PA_OutputSimpleText(g_screen, 6, 10, " ");
-				PA_OutputSimpleText(g_screen, 6, 14, "*");
-			}
-			else {
-				PA_OutputSimpleText(g_screen, 6, 10, "*");
-				PA_OutputSimpleText(g_screen, 6, 14, " ");
-			}
 		}
 
 		if (Pad.Newpress.Left || Pad.Newpress.Right) {
@@ -211,4 +212,5 @@ void vGameOption(u8 *pGameState)
 	}
 
 	iSetOption(g_option);
+	*pGameState = Menu_Init;
 }
