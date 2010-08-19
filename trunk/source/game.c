@@ -471,7 +471,7 @@ void vSaveFileData(u8 *pGameState)
 		memcpy(score.szUsername, szBuf, iLength);
 
 		//show congratulation message
-		position = iSaveData(&score);
+		position = iSaveData(score);
 	}
 }
 

@@ -41,8 +41,8 @@ void vMenuInit(u8 *gameState)
 
 	PA_OutputSimpleText(g_screen, 11, 10, "Start");
 	PA_OutputSimpleText(g_screen, 11, 12, "Score");
-#if 0
 	PA_OutputSimpleText(g_screen, 11, 14, "Option");
+#if 0
 	PA_OutputSimpleText(g_screen, 11, 16, "Credit");
 #endif
 
@@ -70,8 +70,8 @@ void vMenuShow(u8 *gameState)
 			iSelect++;
 
 		if (iSelect < Menu_Start)
-			iSelect = Menu_Score;
-		else if (iSelect > Menu_Score)
+			iSelect = Menu_Option;
+		else if (iSelect > Menu_Option)
 			iSelect = Menu_Start;
 
 		switch(iSelect)
@@ -164,29 +164,51 @@ void vGameOption(u8 *pGameState)
 	PA_Clear8bitBg(1);
 	PA_ClearTextBg(0);
 
-	PA_OutputSimpleText(g_screen, 5, 10, "Music");
-	PA_OutputSimpleText(g_screen, 5, 14, "Sound");
+	PA_OutputSimpleText(g_screen, 10, 10, "Music");
+	PA_OutputSimpleText(g_screen, 10, 14, "Sound");
 
 	while(1) {
 		if (g_option.music_enable) {
-			PA_OutputSimpleText(g_screen, 5, 11, "-> On      OFF");
+			PA_OutputSimpleText(g_screen, 8, 11, "-> On      OFF");
 		}
 		else {
-			PA_OutputSimpleText(g_screen, 5, 11, "   On   -> OFF");
+			PA_OutputSimpleText(g_screen, 8, 11, "   On   -> OFF");
 		}
 		
 		if (g_option.sound_enable) {
-			PA_OutputSimpleText(g_screen, 5, 15, "-> On      OFF");
+			PA_OutputSimpleText(g_screen, 8, 15, "-> On      OFF");
 		}
 		else {
-			PA_OutputSimpleText(g_screen, 5, 15, "   On   -> OFF");
+			PA_OutputSimpleText(g_screen, 8, 15, "   On   -> OFF");
 		}
 
+		if (Pad.Newpress.Up || Pad.Newpress.Down) {
+			row = !row;
+			if (row) {
+				PA_OutputSimpleText(g_screen, 6, 10, " ");
+				PA_OutputSimpleText(g_screen, 6, 14, "*");
+			}
+			else {
+				PA_OutputSimpleText(g_screen, 6, 10, "*");
+				PA_OutputSimpleText(g_screen, 6, 14, " ");
+			}
+		}
+
+		if (Pad.Newpress.Left || Pad.Newpress.Right) {
+			if (row) {
+				g_option.sound_enable = !g_option.sound_enable;
+			}
+			else {
+				g_option.music_enable = !g_option.music_enable;
+			}
+		}
 
 		if (Pad.Newpress.B) {
 			break;
 		}
+
+		PA_WaitForVBL();
 	}
 
-
+	iSetOption(g_option);
 }

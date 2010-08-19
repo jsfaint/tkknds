@@ -16,12 +16,12 @@ typedef struct {
 	unsigned char szUsername[MAX_NAME_LEN];
 	unsigned long count;
 	unsigned char bulletNum;
-} Score;
+} Score, *PSCore;
 
 typedef struct {
 	unsigned char sound_enable;
 	unsigned char music_enable;
-} Option;
+} Option, *POption;
 
 typedef struct {
 	Score  top[MAX_SAVE_ITEM];
@@ -32,8 +32,8 @@ typedef struct {
 int iCheckData(void); //if return failed, default the data.
 int getPosition(long count, int bulletNum);
 int iLoadData(PSave psData);
-int iSaveData(Score *pScore);
+int iSaveData(Score score);
 
-int iGetOption(void);
-int iSetOption(void);
+int iGetOption(POption pOption);
+int iSetOption(Option option);
 #endif //__SAVE_H__

@@ -28,7 +28,7 @@ int main(int argc, char ** argv)
 	if (g_bLibfat)
 	{
 		iCheckData();
-		iGetOption();
+		iGetOption(&g_option);
 	}
 	PA_OutputSimpleText(g_screen,5,10,"                  ");
 	PA_OutputSimpleText(g_screen,5,11,"                  ");
