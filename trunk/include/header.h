@@ -3,7 +3,7 @@
 
 #include <PA9.h>
 
-#define VERSION "v0.91 patch"
+#define VERSION "v0.92"
 #define STYLUS_CONTRL
 #define SAVE_DATA
 
