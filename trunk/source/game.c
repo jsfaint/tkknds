@@ -11,8 +11,11 @@ jason (jsfaint@gmail.com) 2008-11-12
 #include "game.h"
 #include "gfx/all_gfx.c"
 
-#define PLANEX  (g_plane.x>>8)
-#define PLANEY  (g_plane.y>>8)
+#define PLANEX  (g_plane.x >> 8)
+#define PLANEY  (g_plane.y >> 8)
+
+#define BULLETX(idx)  (g_bullet[idx].x >> 8)
+#define BULLETY(idx)  (g_bullet[idx].y >> 8)
 
 s32 g_count = 0;
 u32 g_bulletNum = BULLET_INIT;
@@ -214,7 +217,7 @@ bool bCheckCollision()
 	s16 ii;
 	for (ii=0; ii<g_bulletNum; ii++)
 	{
-		if (PA_Distance(PLANEX+8, PLANEY+8, g_bullet[ii].x+4, g_bullet[ii].y+4) < 8*8)
+		if (PA_Distance(PLANEX+8, PLANEY+8, BULLETX(ii)+4, BULLETY(ii)+4) < 8*8)
 			return TRUE;
 	}
 
@@ -246,20 +249,20 @@ void vBulletInit(u8 uIndex)
 	switch(tmp)
 	{
 		case UP: // y = 0
-			pBullet->y = 0;
-			pBullet->x = PA_RandMinMax(0, SCREEN_WIDTH);
+			pBullet->y = 0 << 8;
+			pBullet->x = PA_RandMinMax(0, SCREEN_WIDTH) << 8;
 			break;
 		case LEFT: // x = 0
-			pBullet->x = 0;
-			pBullet->y = PA_RandMinMax(0, SCREEN_HEIGHT);
+			pBullet->x = 0 << 8;
+			pBullet->y = PA_RandMinMax(0, SCREEN_HEIGHT) << 8;
 			break;
 		case DOWN: // y = max
-			pBullet->x = PA_RandMinMax(0, SCREEN_WIDTH);
-			pBullet->y = SCREEN_HEIGHT - 4;
+			pBullet->x = PA_RandMinMax(0, SCREEN_WIDTH) << 8;
+			pBullet->y = (SCREEN_HEIGHT - 4) << 8;
 			break;
 		case RIGHT: // x = max
-			pBullet->x = SCREEN_WIDTH - 4;
-			pBullet->y = PA_RandMinMax(0, SCREEN_HEIGHT);
+			pBullet->x = (SCREEN_WIDTH - 4) << 8;
+			pBullet->y = PA_RandMinMax(0, SCREEN_HEIGHT) << 8;
 			break;
 		default:
 			break;
@@ -272,9 +275,9 @@ void vBulletInit(u8 uIndex)
 	pBullet->type = Bullet_Normal;
 #endif
 
-	angle = PA_GetAngle(pBullet->x, pBullet->y, PLANEX, PLANEY);
-	pBullet->vx = PA_Cos(angle)>>8;
-	pBullet->vy = -PA_Sin(angle)>>8;
+	angle = PA_GetAngle(BULLETX(uIndex), BULLETY(uIndex), PLANEX, PLANEY);
+	pBullet->vx = PA_Cos(angle);
+	pBullet->vy = -PA_Sin(angle);
 }
 
 void vBulletInitAll(void)
@@ -305,8 +308,8 @@ void vMoveBullet(u8 *pGameState)
 
 	for (uIndex=0; uIndex<g_bulletNum; uIndex++)
 	{
-		if(g_bullet[uIndex].x >= SCREEN_WIDTH || g_bullet[uIndex].x <= 0
-				|| g_bullet[uIndex].y >= SCREEN_HEIGHT || g_bullet[uIndex].y <= 0) {
+		if(BULLETX(uIndex) >= SCREEN_WIDTH || BULLETX(uIndex) <= 0
+				|| BULLETY(uIndex) >= SCREEN_HEIGHT || BULLETY(uIndex) <= 0) {
 			vBulletInit(uIndex);
 		}
 
@@ -321,7 +324,7 @@ void vMoveBullet(u8 *pGameState)
 				break;
 		}
 
-		PA_SetSpriteXY(g_screen, uIndex+1, g_bullet[uIndex].x, g_bullet[uIndex].y);
+		PA_SetSpriteXY(g_screen, uIndex+1, BULLETX(uIndex), BULLETY(uIndex));
 	}
 }
 
@@ -511,19 +514,19 @@ void vCreateBullet(u8 index)
 	case Bullet_Normal:
 		PA_CreateSpriteFromGfx(g_screen, index+1, g_bullet_normal_gfx,
 				OBJ_SIZE_8X8, 1, 1,
-				g_bullet[index].x, g_bullet[index].y);
+				BULLETX(index), BULLETY(index));
 		break;
 #if 0
 	case Bullet_Hunter:
 		PA_CreateSpriteFromGfx(g_screen, index+1, g_bullet_hunter_gfx,
 				OBJ_SIZE_8X8, 1, 1,
-				g_bullet[index].x, g_bullet[index].y);
+				BULLETX(index), BULLETY(index));
 		break;
 
 	case Bullet_Explode:
 		PA_CreateSpriteFromGfx(g_screen, index+1, g_bullet_explode_gfx,
 				OBJ_SIZE_8X8, 1, 1,
-				g_bullet[index].x, g_bullet[index].y);
+				BULLETX(index), BULLETY(index));
 		break;
 #endif
 	default:

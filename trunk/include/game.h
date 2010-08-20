@@ -20,8 +20,8 @@ typedef enum BULLETTYPE{
 } BulletType;
 
 typedef struct{
-	s16 x;
-	s16 y;
+	s32 x;
+	s32 y;
 	s16 vx;
 	s16 vy;
 	BulletType type;
