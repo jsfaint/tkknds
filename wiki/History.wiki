@@ -2,6 +2,16 @@
 = History =
 This page is the update history of TKKN DS .
 ----
+*v0.92*
+Add Game option menu for enable/disable background music and sound effect.
+
+After "game over", you must input your name in old version, but now you can just press X to restart the game, and press Y to save your score and see the list.
+
+Modify the bullet initial function.
+
+Fix an old issue, which will cause the bullet move strangely.
+
+----
 *v0.91*
 
 Implement the top 10 list.
