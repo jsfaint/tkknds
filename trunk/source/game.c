@@ -214,6 +214,7 @@ bool, collision return true, no collision return false.
  ********************************************/
 bool bCheckCollision()
 {
+	return FALSE;
 	s16 ii;
 	for (ii=0; ii<g_bulletNum; ii++)
 	{
@@ -308,8 +309,8 @@ void vMoveBullet(u8 *pGameState)
 
 	for (uIndex=0; uIndex<g_bulletNum; uIndex++)
 	{
-		if(BULLETX(uIndex) >= SCREEN_WIDTH || BULLETX(uIndex) <= 0
-				|| BULLETY(uIndex) >= SCREEN_HEIGHT || BULLETY(uIndex) <= 0) {
+		if(BULLETX(uIndex) > SCREEN_WIDTH || BULLETX(uIndex) < 0
+				|| BULLETY(uIndex) > SCREEN_HEIGHT || BULLETY(uIndex) < 0) {
 			vBulletInit(uIndex);
 		}
 
