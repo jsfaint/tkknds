@@ -217,7 +217,7 @@ bool bCheckCollision()
 	s16 ii;
 	for (ii=0; ii<g_bulletNum; ii++)
 	{
-		if (PA_Distance(PLANEX+8, PLANEY+8, BULLETX(ii)+4, BULLETY(ii)+4) < 8*8)
+		if (PA_Distance(PLANEX+8, PLANEY+8, BULLETX(ii)+4, BULLETY(ii)+4) < 8*4)
 			return TRUE;
 	}
 
