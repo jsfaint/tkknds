@@ -78,13 +78,7 @@ void vGamePlay(u8 *pGameState)
 
 		//In the beginning of the game, bullet should be increasing in 1/10 seconds.
 		//After the bullet number met "BULLET_MIN", add a bullet every interval, about "BULLET_INCREASE_INTEVAL" seconds
-		if (g_count%6==0 && g_bulletNum < BULLET_MIN) {
-			vBulletInit(g_bulletNum);
-			vCreateBullet(g_bulletNum);
-			g_bulletNum++;
-		}
-		else if (g_count%(PA_RTC.FPS*BULLET_INCREASE_INTEVAL)==0 && g_bulletNum<=BULLET_MAX)
-		{
+		if ((g_count%6==0 && g_bulletNum < BULLET_MIN) || (g_count%(PA_RTC.FPS*BULLET_INC_IVL)==0 && g_bulletNum<=BULLET_MAX)) {
 			vBulletInit(g_bulletNum);
 			vCreateBullet(g_bulletNum);
 			g_bulletNum++;
