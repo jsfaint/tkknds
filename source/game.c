@@ -214,7 +214,6 @@ bool, collision return true, no collision return false.
  ********************************************/
 bool bCheckCollision()
 {
-	return FALSE;
 	s16 ii;
 	for (ii=0; ii<g_bulletNum; ii++)
 	{
