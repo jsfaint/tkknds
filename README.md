@@ -1,4 +1,4 @@
-# tkkn
+# tkknds
 A clone of tkkn99 for NDS(Nintendo DS) powered by PALib
 
 The original repository was deployed on googlecode.
